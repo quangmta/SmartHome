@@ -17,6 +17,6 @@ typedef struct
  float Kd;
 } PidParameter;
 
-int16_t PID_Calc(PidParameter PID,float speed,float setPoint);
+int16_t PID_Calc(PidParameter PID,float current,float setPoint);
 
 #endif /* INC_PID_H_ */
