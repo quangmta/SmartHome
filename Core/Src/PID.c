@@ -1,8 +1,8 @@
 /*
  * PID.c
  *
- *  Created on: Mar 21, 2022
- *      Author: nguye
+ *  Created on: Oct 4, 2023
+ *      Author: Quang
  */
 #include "PID.h"
 #include "main.h"
