@@ -15,14 +15,14 @@ float last_error_pres=0;
 float integrated_error_pres=0;
 //extern UART_HandleTypeDef huart6;
 
-int16_t PID_Calc(PidParameter PID,float speed,float setPoint)
+int16_t PID_Calc(PidParameter PID,float current,float setPoint)
 {
 	int16_t pidOut=0;
 	float pTerm = 0, iTerm = 0,dTerm = 0, dt = 10;
 	uint32_t now = HAL_GetTick();
 	if (now>timerPID_pres) dt = (float) (HAL_GetTick() - timerPID_pres);
 	timerPID_pres= HAL_GetTick();
-	float error = setPoint - speed;
+	float error = setPoint - current;
 
 	pTerm =   PID.Kp  * error;
 
