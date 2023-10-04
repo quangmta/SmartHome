@@ -196,6 +196,9 @@ int main(void)
   /* USER CODE BEGIN 2 */
   HAL_ADC_Start_DMA(&hadc1, &adc_buffer, 1);
   HAL_UART_Receive_IT(&huart6,&rx_data, 1);
+  HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_3);
+  HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_4);
+
 
   /* USER CODE END 2 */
 
