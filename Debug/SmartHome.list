@@ -43,11 +43,11 @@ Idx Name          Size      VMA       LMA       File off  Algn
                   CONTENTS, READONLY, DEBUGGING, OCTETS
  19 .debug_line   00016db6  00000000  00000000  000627c7  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 20 .debug_str    000eee5d  00000000  00000000  0007957d  2**0
+ 20 .debug_str    000eee54  00000000  00000000  0007957d  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 21 .debug_frame  00006570  00000000  00000000  001683dc  2**2
+ 21 .debug_frame  00006570  00000000  00000000  001683d4  2**2
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 22 .debug_line_str 0000004b  00000000  00000000  0016e94c  2**0
+ 22 .debug_line_str 0000004b  00000000  00000000  0016e944  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
 
 Disassembly of section .text:
@@ -2835,7 +2835,7 @@ void StartTaskReceiveData(void const * argument)
 		}
 		case 'r':
 		{
-			response = 1;
+			 request = 1;
  8001a14:	4b0d      	ldr	r3, [pc, #52]	; (8001a4c <StartTaskReceiveData+0x1d8>)
  8001a16:	2201      	movs	r2, #1
  8001a18:	701a      	strb	r2, [r3, #0]
@@ -3122,7 +3122,7 @@ void StartTaskSendData(void const * argument)
   /* Infinite loop */
   for(;;)
   {
-	  if(response)
+	  if(request)
  8001c38:	4b1e      	ldr	r3, [pc, #120]	; (8001cb4 <StartTaskSendData+0x84>)
  8001c3a:	781b      	ldrb	r3, [r3, #0]
  8001c3c:	2b00      	cmp	r3, #0
@@ -3180,7 +3180,7 @@ void StartTaskSendData(void const * argument)
     osDelay(1000);
  8001ca8:	f44f 707a 	mov.w	r0, #1000	; 0x3e8
  8001cac:	f004 facb 	bl	8006246 <osDelay>
-	  if(response)
+	  if(request)
  8001cb0:	e7c2      	b.n	8001c38 <StartTaskSendData+0x8>
  8001cb2:	bf00      	nop
  8001cb4:	20000606 	.word	0x20000606

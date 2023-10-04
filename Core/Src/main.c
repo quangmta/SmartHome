@@ -61,7 +61,7 @@ osThreadId TaskSendDataHandle;
 uint32_t adc_value,adc_buffer,sum,adc_average;
 uint16_t count=0;
 uint8_t flag_avg=0,flag_adc=0,flag_value =0;
-uint8_t flag_speed,response;
+uint8_t flag_speed,request;
 
 float temp, speed, temp_set, speed_set;
 uint16_t pwm_temp,pwm_speed;
@@ -609,7 +609,7 @@ void StartTaskReceiveData(void const * argument)
 		}
 		case 'r':
 		{
-			response = 1;
+			 request = 1;
 		}
 	}
 
@@ -712,7 +712,7 @@ void StartTaskSendData(void const * argument)
   /* Infinite loop */
   for(;;)
   {
-	  if(response)
+	  if(request)
 	  {
 		  uint8_t state_heater = HAL_GPIO_ReadPin(Thermostat_GPIO_Port, Thermostat_Pin);
 		  uint8_t state_fan = HAL_GPIO_ReadPin(Relay_GPIO_Port, Relay_Pin);
