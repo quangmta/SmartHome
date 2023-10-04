@@ -16,7 +16,7 @@ Structure: `prefix`+`value`
 For example: command `t25.5` sets the target temperature to 25.5 degrees, `f0` turns off the fan, `f1` turns on the fan.
 ## Data sent to server
 
-Structure: `Temperature` + `Capacity of heater` + `Thermorstat' + `Relay` + `Frequency converter failure`
+Structure: `Temperature` + `Capacity of heater` + `Thermorstat` + `Relay` + `Frequency converter failure`
 
 For example: Command `26 2000 0 0 0` means the measure temperature is 26, the capacity of heater is 2000W, 
 the heater, fan and frequency converter work normally.
