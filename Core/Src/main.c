@@ -645,7 +645,8 @@ void StartTaskFan(void const *argument) {
 	for (;;) {
 		if (HAL_GPIO_ReadPin(Fan_Ctrl_GPIO_Port, Fan_Ctrl_Pin)) {
 			if (!HAL_GPIO_ReadPin(Relay_GPIO_Port, Relay_Pin)
-					&& !HAL_GPIO_ReadPin(FC_Failure_GPIO_Port, FC_Failure_Pin)) {
+					&& !HAL_GPIO_ReadPin(FC_Failure_GPIO_Port,
+							FC_Failure_Pin)) {
 				if (flag_speed) {
 					pwm_speed = (uint32_t) (speed_set * coeff_speed);
 					__HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_4, pwm_speed);
@@ -679,7 +680,7 @@ void StartTaskSendData(void const *argument) {
 			sprintf(Txdata, "%.1f %d %d %d %d\n", temp, pwm_temp, state_heater,
 					state_fan, state_fc);
 			HAL_UART_Transmit(&huart6, (uint8_t*) Txdata, strlen(Txdata),
-			HAL_MAX_DELAY);
+					HAL_MAX_DELAY);
 			request = 0;
 		}
 		osDelay(1000);
