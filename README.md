@@ -2,6 +2,7 @@
 ## Data received from server via UART
 
 Structure: `prefix`+`value`+`\n`
+
 'Prefix':
 + _"t"_: Temperature
 + _"v"_: Speed of fan
