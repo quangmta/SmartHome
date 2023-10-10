@@ -40,7 +40,7 @@ int16_t PID_Calc(PidParameter PID,float current,float setPoint)
 	last_error_pres = error;
 
 	if (pidOut>PWM_MAX) pidOut=PWM_MAX;
-	else if(pidOut<-PWM_MAX) pidOut=-PWM_MAX;
+	else if(pidOut<PWM_MIN) pidOut=PWM_MIN;
 	return pidOut;
 }
 
