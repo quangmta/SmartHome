@@ -63,7 +63,8 @@ void Error_Handler(void);
 #define ADC_Temp_GPIO_Port GPIOA
 #define Thermostat_Pin GPIO_PIN_8
 #define Thermostat_GPIO_Port GPIOE
-#define Relay_Pin GPIO_PIN_9
+#define Thermostat_EXTI_IRQn EXTI9_5_IRQn
+#define Relay_Pin GPIO_PIN_11
 #define Relay_GPIO_Port GPIOE
 #define Heater_Ctrl_Pin GPIO_PIN_12
 #define Heater_Ctrl_GPIO_Port GPIOE
@@ -77,6 +78,7 @@ void Error_Handler(void);
 #define Fan_Ctrl_GPIO_Port GPIOD
 #define FC_Failure_Pin GPIO_PIN_4
 #define FC_Failure_GPIO_Port GPIOD
+#define FC_Failure_EXTI_IRQn EXTI4_IRQn
 
 /* USER CODE BEGIN Private defines */
 
