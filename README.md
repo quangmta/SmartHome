@@ -18,7 +18,7 @@ Data Structure (5 bytes): `prefix (1 byte)`+`value (4 bytes)`
 + _"r"_: request
 
 For example, data = `0x74 0x00 0x00 0x00 0x1a` will set temperature to 26 degrees, 
-data = `0x73 0x00 0x00 0x00 0x01` will start the system.
+data = `0x73 0x00 0x00 0x00 0x01` will start the system (little endianess).
 
 ## Data sent to server
 
