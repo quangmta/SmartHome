@@ -35,7 +35,7 @@
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
-#define coeff_temp 30
+#define coeff_temp 5
 #define coeff_speed 0.2
 /* USER CODE END PD */
 
@@ -77,7 +77,7 @@ char rx_buffer[30];
 uint8_t rx_index = 0;
 uint8_t rx_data;
 
-PidParameter PID_TEMP = { 15, 5, 0.1 };
+PidParameter PID_TEMP = { 15, 5, 0 };
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -137,7 +137,7 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart) {
 			rx_buffer[rx_index++] = rx_data;
 		} else {
 //			HAL_GPIO_TogglePin(GPIOD, GPIO_PIN_13);
-			HAL_UART_Transmit(&huart6, (uint8_t*)rx_buffer, strlen(rx_buffer), HAL_MAX_DELAY);
+//			HAL_UART_Transmit(&huart6, (uint8_t*)rx_buffer, strlen(rx_buffer), HAL_MAX_DELAY);
 			flag_value = 1;
 			rx_index = 0;
 		}
@@ -634,7 +634,7 @@ void StartTaskHeater(void const * argument)
 				if (abs(temp - temp_set) > 2) {
 					pwm_temp = PID_Calc(PID_TEMP, temp, temp_set);
 					__HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_3, pwm_temp);
-					osDelay(1000);
+//					osDelay(1000);
 				} else
 				{
 					osDelay(60000);
