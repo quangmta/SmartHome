@@ -1,8 +1,13 @@
 # Smart Home
+Structure data Protocol (like Modbus):  `Length`+`data` +   `crc8`
+
+									     1 byte + n byte + 1 bytes
 ## Data received from server via UART
 
-Structure: `prefix`+`value`+`\n`
+Data Structure (5 bytes): `prefix`+`value`
 
+				1 byte + 4 byte 
+				
 'Prefix':
 + _"t"_: Temperature
 + _"v"_: Speed of fan
@@ -14,9 +19,16 @@ Structure: `prefix`+`value`+`\n`
 + _"d"_: Kd
 + _"r"_: request
 
-For example: command `t25.5` sets the target temperature to 25.5 degrees, `f0` turns off the fan, `f1` turns on the fan.
+
 ## Data sent to server
 
-Structure: `Temperature` + ` Capacity of heater` + ` Thermorstat` + ` Relay` + ` Frequency converter failure` + `\n`
+### Data of system:
 
-For example: Command `26 2000 0 0 0` means the measure temperature is 26, the capacity of heater is 2000W, the heater, fan and frequency converter work normally.
+Data Structure (10 bytes): 'Prefix(d)` + `Temperature` + `Capacity of heater` + `Thermorstat` + `Relay` + `Frequency converter failure` 
+
+					        1 byte +   float 4 byte +	 float 4 bytes     + 5 bits + 1 bit +  1 bit +    1 bit
+					        
+### Acknowledgement of receiving data:
+
+Data Structure (2 bytes): `Prefix (a)`+`0 or 1`
+							1 byte    + 1 byte				       
