@@ -1,13 +1,10 @@
 # Smart Home
-Structure data Protocol (like Modbus):  `Length`+`data` +   `crc8`
+Structure data Protocol (like Modbus): `Length (1 byte)`+`data (n bytes)` + `crc8 (1 byte)`
 
-									     1 byte + n byte + 1 bytes
 ## Data received from server via UART
 
-Data Structure (5 bytes): `prefix`+`value`
-
-				1 byte + 4 byte 
-				
+Data Structure (5 bytes): `prefix (1 byte)`+`value (4 bytes)`
+		
 'Prefix':
 + _"t"_: Temperature
 + _"v"_: Speed of fan
@@ -24,11 +21,8 @@ Data Structure (5 bytes): `prefix`+`value`
 
 ### Data of system:
 
-Data Structure (10 bytes): 'Prefix(d)` + `Temperature` + `Capacity of heater` + `Thermorstat` + `Relay` + `Frequency converter failure` 
-
-					        1 byte +   float 4 byte +	 float 4 bytes     + 5 bits + 1 bit +  1 bit +    1 bit
-					        
+Data Structure (10 bytes): `Prefix(symbol d) (1 byte)` + `Temperature (float 4 bytes)` + `Capacity of heater (float 4 bytes)` + `5 bits 0` + `Thermorstat (1 bit)` + `Relay (1 bit)` + `Frequency converter failure (1 bit)` 
+   			        
 ### Acknowledgement of receiving data:
 
-Data Structure (2 bytes): `Prefix (a)`+`0 or 1`
-							1 byte    + 1 byte				       
+Data Structure (2 bytes): `Prefix (symbol a) (1 byte)`+`0 or 1 (1 byte)`			       
