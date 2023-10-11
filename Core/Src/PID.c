@@ -7,9 +7,6 @@
 #include "PID.h"
 #include "main.h"
 
-#define PWM_MAX 999
-#define PWM_MIN 0
-
 uint32_t timerPID_pres=0;
 float last_error_pres=0;
 float integrated_error_pres=0;
