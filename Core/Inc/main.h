@@ -36,7 +36,15 @@ extern "C" {
 
 /* Exported types ------------------------------------------------------------*/
 /* USER CODE BEGIN ET */
-
+enum State {
+	STOP,
+	FAN_IDLE,
+	FAN_ON,
+	BLOCK,
+	WORKING,
+	HEATER_BLOWING,
+	FAN_OFF
+};
 /* USER CODE END ET */
 
 /* Exported constants --------------------------------------------------------*/
@@ -81,7 +89,11 @@ void Error_Handler(void);
 #define FC_Failure_EXTI_IRQn EXTI4_IRQn
 
 /* USER CODE BEGIN Private defines */
-
+#define coeff_temp 5
+#define coeff_speed 0.2
+#define MAX_CAP 5000
+#define CRC16_POLYNOMIAL 0x1021
+#define CRC8_POLYNOMIAL 0x31
 /* USER CODE END Private defines */
 
 #ifdef __cplusplus

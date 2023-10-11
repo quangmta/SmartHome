@@ -8,6 +8,7 @@ Data Structure (5 bytes): `prefix (1 byte)`+`value (4 bytes)`
 'Prefix':
 + _"t"_: Temperature
 + _"v"_: Speed of fan
++ _"s"_: Start/Stop system
 + _"f"_: fan control
 + _"h"_: heater control
 + _"c"_: frequency converter control 
@@ -16,13 +17,17 @@ Data Structure (5 bytes): `prefix (1 byte)`+`value (4 bytes)`
 + _"d"_: Kd
 + _"r"_: request
 
+For example, data = `0x74 0x00 0x00 0x00 0x1a` will set temperature to 26 degrees, 
+data = `0x73 0x00 0x00 0x00 0x01` will start the system.
 
 ## Data sent to server
 
-### Data of system:
+### Acknowledgement of receiving data
 
-Data Structure (10 bytes): `Prefix(symbol d) (1 byte)` + `Temperature (float 4 bytes)` + `Capacity of heater (float 4 bytes)` + `5 bits 0` + `Thermorstat (1 bit)` + `Relay (1 bit)` + `Frequency converter failure (1 bit)` 
-   			        
-### Acknowledgement of receiving data:
+Data Structure (2 bytes): `Prefix (symbol a) (1 byte)`+`0 or 1 (1 byte)`
 
-Data Structure (2 bytes): `Prefix (symbol a) (1 byte)`+`0 or 1 (1 byte)`			       
+### Data of system
+
+Data Structure (10 bytes): `Prefix(symbol d) (1 byte)` + `Temperature (float 4 bytes)` 
++ `Capacity of heater (float 4 bytes)` + `2 bits 0` + `System state(3 bits)` + 
+`Thermorstat (1 bit)` + `Relay (1 bit)` + `Frequency converter failure (1 bit)` 			       
