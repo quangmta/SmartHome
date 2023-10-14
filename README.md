@@ -28,6 +28,6 @@ Data Structure (2 bytes): `Prefix (symbol a) (1 byte)`+`0 or 1 (1 byte)`
 
 ### Data of system
 
-Data Structure (10 bytes): `Prefix(symbol d) (1 byte)` + `Temperature (float 4 bytes)` 
-+ `Capacity of heater (float 4 bytes)` + `2 bits 0` + `System state(3 bits)` + 
+Data Structure (10 bytes): `Prefix(symbol d) (1 byte)` + `Temperature (float 4 bytes)` +
+ `Capacity of heater (float 4 bytes)` + `2 bits 0` + `System state(3 bits)` + 
 `Thermorstat (1 bit)` + `Relay (1 bit)` + `Frequency converter failure (1 bit)` 			       
