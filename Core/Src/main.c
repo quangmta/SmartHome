@@ -72,7 +72,7 @@ extern uint32_t timerPID_pres;
 //uint8_t flag_heater,flag_fan, flag_fc;
 //uint8_t heater_failure,fan_failure, fc_failure;
 
-uint8_t tx_buffer[12];
+uint8_t tx_buffer[16];
 uint8_t rx_buffer[7];
 union {
 	float fValue;
@@ -792,22 +792,27 @@ void StartTaskSendData(void const *argument) {
 			tx_buffer[0] = 10;
 			tx_buffer[1] = 'd';
 
-			data32.fValue = temp;
+			data32.fValue = temp_set;
 			for (i = 0; i < 4; i++) {
 				tx_buffer[i + 2] = data32.cValue[i];
 			}
 
-			data32.fValue = pwm_temp / PWM_MAX * MAX_CAP;
+			data32.fValue = temp;
 			for (i = 0; i < 4; i++) {
 				tx_buffer[i + 6] = data32.cValue[i];
 			}
 
-			tx_buffer[10] = State_Machine << 3 | state_heater << 2
+			data32.fValue = pwm_temp / PWM_MAX * MAX_CAP;
+			for (i = 0; i < 4; i++) {
+				tx_buffer[i + 10] = data32.cValue[i];
+			}
+
+			tx_buffer[14] = State_Machine << 3 | state_heater << 2
 					| state_fan << 1 | state_fc;
 
-			tx_buffer[11] = calculate_crc8(tx_buffer, 10);
+			tx_buffer[15] = calculate_crc8(tx_buffer, 15);
 
-			HAL_UART_Transmit(&huart6, (uint8_t*) tx_buffer, 12, HAL_MAX_DELAY);
+			HAL_UART_Transmit(&huart6, (uint8_t*) tx_buffer, 16, HAL_MAX_DELAY);
 
 			request = 0;
 		}
