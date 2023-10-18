@@ -1561,8 +1561,8 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart) {
  80011b4:	4b06      	ldr	r3, [pc, #24]	; (80011d0 <HAL_UART_RxCpltCallback+0x30>)
  80011b6:	2201      	movs	r2, #1
  80011b8:	701a      	strb	r2, [r3, #0]
-		HAL_UART_Receive_IT(&huart6, rx_buffer, 9);
- 80011ba:	2209      	movs	r2, #9
+		HAL_UART_Receive_IT(&huart6, rx_buffer, 7);
+ 80011ba:	2207      	movs	r2, #7
  80011bc:	4905      	ldr	r1, [pc, #20]	; (80011d4 <HAL_UART_RxCpltCallback+0x34>)
  80011be:	4803      	ldr	r0, [pc, #12]	; (80011cc <HAL_UART_RxCpltCallback+0x2c>)
  80011c0:	f003 fd87 	bl	8004cd2 <HAL_UART_Receive_IT>

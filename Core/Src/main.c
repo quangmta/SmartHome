@@ -162,7 +162,7 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart) {
 //			rx_index = 0;
 //		}
 		flag_receive = 1;
-		HAL_UART_Receive_IT(&huart6, rx_buffer, 9);
+		HAL_UART_Receive_IT(&huart6, rx_buffer, 7);
 	}
 }
 
