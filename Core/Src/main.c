@@ -873,7 +873,7 @@ void StartTaskFan(void const *argument) {
 				flag_speed = 0;
 			}
 		} else if (State_Machine == HEATER_BLOWING) {
-			osDelay(1800000);
+			osDelay(30000);
 			State_Machine = STOP;
 			HAL_GPIO_WritePin(Fan_Ctrl_GPIO_Port, Fan_Ctrl_Pin, 0);
 			HAL_GPIO_WritePin(FC_Ctrl_GPIO_Port, FC_Ctrl_Pin, 0);
