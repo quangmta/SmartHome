@@ -784,16 +784,16 @@ void StartTaskReceiveData(void const * argument)
 						}
 					} else //stop
 					{
-						HAL_GPIO_WritePin(Heater_Ctrl_GPIO_Port,
-						Heater_Ctrl_Pin, 0);
-						pwm_speed = 0;
 						pwm_temp = 0;
 						if (State_Machine == WORKING)
 							State_Machine = HEATER_BLOWING;
 						else if (State_Machine == BLOCK) {
+							pwm_speed = 0;
 							HAL_GPIO_WritePin(FC_Ctrl_GPIO_Port, FC_Ctrl_Pin,
 									0);
 							HAL_GPIO_WritePin(Fan_Ctrl_GPIO_Port, Fan_Ctrl_Pin,
+									0);
+							HAL_GPIO_WritePin(Heater_Ctrl_GPIO_Port, Heater_Ctrl_Pin,
 									0);
 							State_Machine = STOP;
 						}
@@ -899,27 +899,28 @@ void StartTaskFan(void const * argument)
   /* USER CODE BEGIN StartTaskFan */
 	/* Infinite loop */
 	for (;;) {
-		if (State_Machine == FAN_IDLE || State_Machine == WORKING) {
-			if (flag_speed) {
-				pwm_speed = (uint32_t) (speed_set * coeff_speed);
-				__HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_4, pwm_speed);
+			if (State_Machine == FAN_IDLE || State_Machine == WORKING) {
+				if (flag_speed) {
+					pwm_speed = (uint32_t) (speed_set * coeff_speed);
+					__HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_4, pwm_speed);
 
-				if (State_Machine == FAN_IDLE && speed_set > 0) {
-					HAL_GPIO_WritePin(Heater_Ctrl_GPIO_Port, Heater_Ctrl_Pin,
-							1);
-					State_Machine = FAN_ON;
+					if (State_Machine == FAN_IDLE && speed_set > 0) {
+						HAL_GPIO_WritePin(Heater_Ctrl_GPIO_Port, Heater_Ctrl_Pin,
+								1);
+						State_Machine = FAN_ON;
+					}
+					flag_speed = 0;
 				}
-				flag_speed = 0;
+			} else if (State_Machine == HEATER_BLOWING) {
+				osDelay(30000);
+				State_Machine = STOP;
+				HAL_GPIO_WritePin(Fan_Ctrl_GPIO_Port, Fan_Ctrl_Pin, 0);
+				HAL_GPIO_WritePin(FC_Ctrl_GPIO_Port, FC_Ctrl_Pin, 0);
+				HAL_GPIO_WritePin(Heater_Ctrl_GPIO_Port, Heater_Ctrl_Pin, 0);
 			}
-		} else if (State_Machine == HEATER_BLOWING) {
-			osDelay(30000);
-			State_Machine = STOP;
-			HAL_GPIO_WritePin(Fan_Ctrl_GPIO_Port, Fan_Ctrl_Pin, 0);
-			HAL_GPIO_WritePin(FC_Ctrl_GPIO_Port, FC_Ctrl_Pin, 0);
-		}
 
-		osDelay(5000);
-	}
+			osDelay(5000);
+		}
   /* USER CODE END StartTaskFan */
 }
 
@@ -970,8 +971,8 @@ void StartTaskSendData(void const * argument)
 				datatx[i + 9] = data32.cValue[i];
 			}
 
-			datatx[13] = (((State_Machine && 0x7 ) << 3) | ((state_heater && 1) << 2 )
-					| ((state_fan && 1) << 1) | (state_fc && 1));
+			datatx[13] = State_Machine << 3 | state_heater << 2
+								| state_fan << 1 | state_fc ;
 
 			PrepareData(datatx, 14);
 
