@@ -1,73 +1,73 @@
 /**
- ******************************************************************************
- * @file    stm32f4xx_hal_rcc_ex.c
- * @author  MCD Application Team
- * @brief   Extension RCC HAL module driver.
- *          This file provides firmware functions to manage the following
- *          functionalities RCC extension peripheral:
- *           + Extended Peripheral Control functions
- *
- ******************************************************************************
- * @attention
- *
- * Copyright (c) 2017 STMicroelectronics.
- * All rights reserved.
- *
- * This software is licensed under terms that can be found in the LICENSE file in
- * the root directory of this software component.
- * If no LICENSE file comes with this software, it is provided AS-IS.
- ******************************************************************************
- */
+  ******************************************************************************
+  * @file    stm32f4xx_hal_rcc_ex.c
+  * @author  MCD Application Team
+  * @brief   Extension RCC HAL module driver.
+  *          This file provides firmware functions to manage the following
+  *          functionalities RCC extension peripheral:
+  *           + Extended Peripheral Control functions
+  *
+  ******************************************************************************
+  * @attention
+  *
+  * Copyright (c) 2017 STMicroelectronics.
+  * All rights reserved.
+  *
+  * This software is licensed under terms that can be found in the LICENSE file in
+  * the root directory of this software component.
+  * If no LICENSE file comes with this software, it is provided AS-IS.
+  ******************************************************************************
+  */
 
 /* Includes ------------------------------------------------------------------*/
 #include "stm32f4xx_hal.h"
 
 /** @addtogroup STM32F4xx_HAL_Driver
- * @{
- */
+  * @{
+  */
 
 /** @defgroup RCCEx RCCEx
- * @brief RCCEx HAL module driver
- * @{
- */
+  * @brief RCCEx HAL module driver
+  * @{
+  */
 
 #ifdef HAL_RCC_MODULE_ENABLED
 
 /* Private typedef -----------------------------------------------------------*/
 /* Private define ------------------------------------------------------------*/
 /** @addtogroup RCCEx_Private_Constants
- * @{
- */
+  * @{
+  */
 /**
- * @}
- */
+  * @}
+  */
 /* Private macro -------------------------------------------------------------*/
 /* Private variables ---------------------------------------------------------*/
 /* Private function prototypes -----------------------------------------------*/
 /* Private functions ---------------------------------------------------------*/
 /** @defgroup RCCEx_Exported_Functions RCCEx Exported Functions
- *  @{
- */
+  *  @{
+  */
 
 /** @defgroup RCCEx_Exported_Functions_Group1 Extended Peripheral Control functions
  *  @brief  Extended Peripheral Control functions
  *
- @verbatim
+@verbatim
  ===============================================================================
- ##### Extended Peripheral Control functions  #####
+                ##### Extended Peripheral Control functions  #####
  ===============================================================================
- [..]
- This subsection provides a set of functions allowing to control the RCC Clocks
- frequencies.
- [..]
- (@) Important note: Care must be taken when HAL_RCCEx_PeriphCLKConfig() is used to
- select the RTC clock source; in this case the Backup domain will be reset in
- order to modify the RTC Clock source, as consequence RTC registers (including
- the backup registers) and RCC_BDCR register are set to their reset values.
+    [..]
+    This subsection provides a set of functions allowing to control the RCC Clocks
+    frequencies.
+    [..]
+    (@) Important note: Care must be taken when HAL_RCCEx_PeriphCLKConfig() is used to
+        select the RTC clock source; in this case the Backup domain will be reset in
+        order to modify the RTC Clock source, as consequence RTC registers (including
+        the backup registers) and RCC_BDCR register are set to their reset values.
 
- @endverbatim
- * @{
- */
+@endverbatim
+  * @{
+  */
 
 #if defined(STM32F446xx)
 /**
@@ -2147,356 +2147,352 @@ uint32_t HAL_RCCEx_GetPeriphCLKFreq(uint32_t PeriphClk)
 
 #if defined(STM32F427xx) || defined(STM32F437xx) || defined(STM32F429xx) || defined(STM32F439xx)
 /**
- * @brief  Initializes the RCC extended peripherals clocks according to the specified
- *         parameters in the RCC_PeriphCLKInitTypeDef.
- * @param  PeriphClkInit pointer to an RCC_PeriphCLKInitTypeDef structure that
- *         contains the configuration information for the Extended Peripherals
- *         clocks(I2S, SAI, LTDC RTC and TIM).
- *
- * @note   Care must be taken when HAL_RCCEx_PeriphCLKConfig() is used to select
- *         the RTC clock source; in this case the Backup domain will be reset in
- *         order to modify the RTC Clock source, as consequence RTC registers (including
- *         the backup registers) and RCC_BDCR register are set to their reset values.
- *
- * @retval HAL status
- */
-HAL_StatusTypeDef HAL_RCCEx_PeriphCLKConfig(
-		RCC_PeriphCLKInitTypeDef *PeriphClkInit) {
-	uint32_t tickstart = 0U;
-	uint32_t tmpreg1 = 0U;
+  * @brief  Initializes the RCC extended peripherals clocks according to the specified
+  *         parameters in the RCC_PeriphCLKInitTypeDef.
+  * @param  PeriphClkInit pointer to an RCC_PeriphCLKInitTypeDef structure that
+  *         contains the configuration information for the Extended Peripherals
+  *         clocks(I2S, SAI, LTDC RTC and TIM).
+  *
+  * @note   Care must be taken when HAL_RCCEx_PeriphCLKConfig() is used to select
+  *         the RTC clock source; in this case the Backup domain will be reset in
+  *         order to modify the RTC Clock source, as consequence RTC registers (including
+  *         the backup registers) and RCC_BDCR register are set to their reset values.
+  *
+  * @retval HAL status
+  */
+HAL_StatusTypeDef HAL_RCCEx_PeriphCLKConfig(RCC_PeriphCLKInitTypeDef  *PeriphClkInit)
+{
+  uint32_t tickstart = 0U;
+  uint32_t tmpreg1 = 0U;
 
-	/* Check the parameters */
-	assert_param(IS_RCC_PERIPHCLOCK(PeriphClkInit->PeriphClockSelection));
+  /* Check the parameters */
+  assert_param(IS_RCC_PERIPHCLOCK(PeriphClkInit->PeriphClockSelection));
 
-	/*----------------------- SAI/I2S Configuration (PLLI2S) -------------------*/
-	/*----------------------- Common configuration SAI/I2S ---------------------*/
-	/* In Case of SAI or I2S Clock Configuration through PLLI2S, PLLI2SN division
-	 factor is common parameters for both peripherals */
-	if ((((PeriphClkInit->PeriphClockSelection) & RCC_PERIPHCLK_I2S)
-			== RCC_PERIPHCLK_I2S)
-			|| (((PeriphClkInit->PeriphClockSelection)
-					& RCC_PERIPHCLK_SAI_PLLI2S) == RCC_PERIPHCLK_SAI_PLLI2S)
-			|| (((PeriphClkInit->PeriphClockSelection) & RCC_PERIPHCLK_PLLI2S)
-					== RCC_PERIPHCLK_PLLI2S)) {
-		/* check for Parameters */
-		assert_param(IS_RCC_PLLI2SN_VALUE(PeriphClkInit->PLLI2S.PLLI2SN));
+  /*----------------------- SAI/I2S Configuration (PLLI2S) -------------------*/
+  /*----------------------- Common configuration SAI/I2S ---------------------*/
+  /* In Case of SAI or I2S Clock Configuration through PLLI2S, PLLI2SN division
+     factor is common parameters for both peripherals */
+  if((((PeriphClkInit->PeriphClockSelection) & RCC_PERIPHCLK_I2S) == RCC_PERIPHCLK_I2S) ||
+     (((PeriphClkInit->PeriphClockSelection) & RCC_PERIPHCLK_SAI_PLLI2S) == RCC_PERIPHCLK_SAI_PLLI2S) ||
+     (((PeriphClkInit->PeriphClockSelection) & RCC_PERIPHCLK_PLLI2S) == RCC_PERIPHCLK_PLLI2S))
+  {
+    /* check for Parameters */
+    assert_param(IS_RCC_PLLI2SN_VALUE(PeriphClkInit->PLLI2S.PLLI2SN));
 
-		/* Disable the PLLI2S */
-		__HAL_RCC_PLLI2S_DISABLE();
-		/* Get tick */
-		tickstart = HAL_GetTick();
-		/* Wait till PLLI2S is disabled */
-		while (__HAL_RCC_GET_FLAG(RCC_FLAG_PLLI2SRDY) != RESET) {
-			if ((HAL_GetTick() - tickstart) > PLLI2S_TIMEOUT_VALUE) {
-				/* return in case of Timeout detected */
-				return HAL_TIMEOUT;
-			}
-		}
+    /* Disable the PLLI2S */
+    __HAL_RCC_PLLI2S_DISABLE();
+    /* Get tick */
+    tickstart = HAL_GetTick();
+    /* Wait till PLLI2S is disabled */
+    while(__HAL_RCC_GET_FLAG(RCC_FLAG_PLLI2SRDY)  != RESET)
+    {
+      if((HAL_GetTick() - tickstart ) > PLLI2S_TIMEOUT_VALUE)
+      {
+        /* return in case of Timeout detected */
+        return HAL_TIMEOUT;
+      }
+    }
 
-		/*---------------------------- I2S configuration -------------------------*/
-		/* In Case of I2S Clock Configuration through PLLI2S, PLLI2SR must be added
-		 only for I2S configuration */
-		if (((PeriphClkInit->PeriphClockSelection) & RCC_PERIPHCLK_I2S)
-				== (RCC_PERIPHCLK_I2S)) {
-			/* check for Parameters */
-			assert_param(IS_RCC_PLLI2SR_VALUE(PeriphClkInit->PLLI2S.PLLI2SR));
-			/* Configure the PLLI2S division factors */
-			/* PLLI2S_VCO = f(VCO clock) = f(PLLI2S clock input) * (PLLI2SN/PLLM) */
-			/* I2SCLK = f(PLLI2S clock output) = f(VCO clock) / PLLI2SR */
-			__HAL_RCC_PLLI2S_CONFIG(PeriphClkInit->PLLI2S.PLLI2SN,
-					PeriphClkInit->PLLI2S.PLLI2SR);
-		}
+    /*---------------------------- I2S configuration -------------------------*/
+    /* In Case of I2S Clock Configuration through PLLI2S, PLLI2SR must be added
+      only for I2S configuration */
+    if(((PeriphClkInit->PeriphClockSelection) & RCC_PERIPHCLK_I2S) == (RCC_PERIPHCLK_I2S))
+    {
+      /* check for Parameters */
+      assert_param(IS_RCC_PLLI2SR_VALUE(PeriphClkInit->PLLI2S.PLLI2SR));
+      /* Configure the PLLI2S division factors */
+      /* PLLI2S_VCO = f(VCO clock) = f(PLLI2S clock input) * (PLLI2SN/PLLM) */
+      /* I2SCLK = f(PLLI2S clock output) = f(VCO clock) / PLLI2SR */
+      __HAL_RCC_PLLI2S_CONFIG(PeriphClkInit->PLLI2S.PLLI2SN , PeriphClkInit->PLLI2S.PLLI2SR);
+    }
 
-		/*---------------------------- SAI configuration -------------------------*/
-		/* In Case of SAI Clock Configuration through PLLI2S, PLLI2SQ and PLLI2S_DIVQ must
-		 be added only for SAI configuration */
-		if (((PeriphClkInit->PeriphClockSelection) & RCC_PERIPHCLK_SAI_PLLI2S)
-				== (RCC_PERIPHCLK_SAI_PLLI2S)) {
-			/* Check the PLLI2S division factors */
-			assert_param(IS_RCC_PLLI2SQ_VALUE(PeriphClkInit->PLLI2S.PLLI2SQ));
-			assert_param(IS_RCC_PLLI2S_DIVQ_VALUE(PeriphClkInit->PLLI2SDivQ));
+    /*---------------------------- SAI configuration -------------------------*/
+    /* In Case of SAI Clock Configuration through PLLI2S, PLLI2SQ and PLLI2S_DIVQ must
+       be added only for SAI configuration */
+    if(((PeriphClkInit->PeriphClockSelection) & RCC_PERIPHCLK_SAI_PLLI2S) == (RCC_PERIPHCLK_SAI_PLLI2S))
+    {
+      /* Check the PLLI2S division factors */
+      assert_param(IS_RCC_PLLI2SQ_VALUE(PeriphClkInit->PLLI2S.PLLI2SQ));
+      assert_param(IS_RCC_PLLI2S_DIVQ_VALUE(PeriphClkInit->PLLI2SDivQ));
 
-			/* Read PLLI2SR value from PLLI2SCFGR register (this value is not need for SAI configuration) */
-			tmpreg1 = ((RCC->PLLI2SCFGR & RCC_PLLI2SCFGR_PLLI2SR)
-					>> RCC_PLLI2SCFGR_PLLI2SR_Pos);
-			/* Configure the PLLI2S division factors */
-			/* PLLI2S_VCO Input  = PLL_SOURCE/PLLM */
-			/* PLLI2S_VCO Output = PLLI2S_VCO Input * PLLI2SN */
-			/* SAI_CLK(first level) = PLLI2S_VCO Output/PLLI2SQ */
-			__HAL_RCC_PLLI2S_SAICLK_CONFIG(PeriphClkInit->PLLI2S.PLLI2SN,
-					PeriphClkInit->PLLI2S.PLLI2SQ, tmpreg1);
-			/* SAI_CLK_x = SAI_CLK(first level)/PLLI2SDIVQ */
-			__HAL_RCC_PLLI2S_PLLSAICLKDIVQ_CONFIG(PeriphClkInit->PLLI2SDivQ);
-		}
+      /* Read PLLI2SR value from PLLI2SCFGR register (this value is not need for SAI configuration) */
+      tmpreg1 = ((RCC->PLLI2SCFGR & RCC_PLLI2SCFGR_PLLI2SR) >> RCC_PLLI2SCFGR_PLLI2SR_Pos);
+      /* Configure the PLLI2S division factors */
+      /* PLLI2S_VCO Input  = PLL_SOURCE/PLLM */
+      /* PLLI2S_VCO Output = PLLI2S_VCO Input * PLLI2SN */
+      /* SAI_CLK(first level) = PLLI2S_VCO Output/PLLI2SQ */
+      __HAL_RCC_PLLI2S_SAICLK_CONFIG(PeriphClkInit->PLLI2S.PLLI2SN , PeriphClkInit->PLLI2S.PLLI2SQ , tmpreg1);
+      /* SAI_CLK_x = SAI_CLK(first level)/PLLI2SDIVQ */
+      __HAL_RCC_PLLI2S_PLLSAICLKDIVQ_CONFIG(PeriphClkInit->PLLI2SDivQ);
+    }
 
-		/*----------------- In Case of PLLI2S is just selected  -----------------*/
-		if ((PeriphClkInit->PeriphClockSelection & RCC_PERIPHCLK_PLLI2S)
-				== RCC_PERIPHCLK_PLLI2S) {
-			/* Check for Parameters */
-			assert_param(IS_RCC_PLLI2SQ_VALUE(PeriphClkInit->PLLI2S.PLLI2SQ));
-			assert_param(IS_RCC_PLLI2SR_VALUE(PeriphClkInit->PLLI2S.PLLI2SR));
+    /*----------------- In Case of PLLI2S is just selected  -----------------*/
+    if((PeriphClkInit->PeriphClockSelection & RCC_PERIPHCLK_PLLI2S) == RCC_PERIPHCLK_PLLI2S)
+    {
+      /* Check for Parameters */
+      assert_param(IS_RCC_PLLI2SQ_VALUE(PeriphClkInit->PLLI2S.PLLI2SQ));
+      assert_param(IS_RCC_PLLI2SR_VALUE(PeriphClkInit->PLLI2S.PLLI2SR));
 
-			/* Configure the PLLI2S multiplication and division factors */
-			__HAL_RCC_PLLI2S_SAICLK_CONFIG(PeriphClkInit->PLLI2S.PLLI2SN,
-					PeriphClkInit->PLLI2S.PLLI2SQ,
-					PeriphClkInit->PLLI2S.PLLI2SR);
-		}
+      /* Configure the PLLI2S multiplication and division factors */
+      __HAL_RCC_PLLI2S_SAICLK_CONFIG(PeriphClkInit->PLLI2S.PLLI2SN, PeriphClkInit->PLLI2S.PLLI2SQ, PeriphClkInit->PLLI2S.PLLI2SR);
+    }
 
-		/* Enable the PLLI2S */
-		__HAL_RCC_PLLI2S_ENABLE();
-		/* Get tick */
-		tickstart = HAL_GetTick();
-		/* Wait till PLLI2S is ready */
-		while (__HAL_RCC_GET_FLAG(RCC_FLAG_PLLI2SRDY) == RESET) {
-			if ((HAL_GetTick() - tickstart) > PLLI2S_TIMEOUT_VALUE) {
-				/* return in case of Timeout detected */
-				return HAL_TIMEOUT;
-			}
-		}
-	}
-	/*--------------------------------------------------------------------------*/
+    /* Enable the PLLI2S */
+    __HAL_RCC_PLLI2S_ENABLE();
+    /* Get tick */
+    tickstart = HAL_GetTick();
+    /* Wait till PLLI2S is ready */
+    while(__HAL_RCC_GET_FLAG(RCC_FLAG_PLLI2SRDY)  == RESET)
+    {
+      if((HAL_GetTick() - tickstart ) > PLLI2S_TIMEOUT_VALUE)
+      {
+        /* return in case of Timeout detected */
+        return HAL_TIMEOUT;
+      }
+    }
+  }
+  /*--------------------------------------------------------------------------*/
 
-	/*----------------------- SAI/LTDC Configuration (PLLSAI) ------------------*/
-	/*----------------------- Common configuration SAI/LTDC --------------------*/
-	/* In Case of SAI or LTDC Clock Configuration through PLLSAI, PLLSAIN division
-	 factor is common parameters for both peripherals */
-	if ((((PeriphClkInit->PeriphClockSelection) & RCC_PERIPHCLK_SAI_PLLSAI)
-			== RCC_PERIPHCLK_SAI_PLLSAI)
-			|| (((PeriphClkInit->PeriphClockSelection) & RCC_PERIPHCLK_LTDC)
-					== RCC_PERIPHCLK_LTDC)) {
-		/* Check the PLLSAI division factors */
-		assert_param(IS_RCC_PLLSAIN_VALUE(PeriphClkInit->PLLSAI.PLLSAIN));
+  /*----------------------- SAI/LTDC Configuration (PLLSAI) ------------------*/
+  /*----------------------- Common configuration SAI/LTDC --------------------*/
+  /* In Case of SAI or LTDC Clock Configuration through PLLSAI, PLLSAIN division
+     factor is common parameters for both peripherals */
+  if((((PeriphClkInit->PeriphClockSelection) & RCC_PERIPHCLK_SAI_PLLSAI) == RCC_PERIPHCLK_SAI_PLLSAI) ||
+     (((PeriphClkInit->PeriphClockSelection) & RCC_PERIPHCLK_LTDC) == RCC_PERIPHCLK_LTDC))
+  {
+    /* Check the PLLSAI division factors */
+    assert_param(IS_RCC_PLLSAIN_VALUE(PeriphClkInit->PLLSAI.PLLSAIN));
 
-		/* Disable PLLSAI Clock */
-		__HAL_RCC_PLLSAI_DISABLE();
-		/* Get tick */
-		tickstart = HAL_GetTick();
-		/* Wait till PLLSAI is disabled */
-		while (__HAL_RCC_PLLSAI_GET_FLAG() != RESET) {
-			if ((HAL_GetTick() - tickstart) > PLLSAI_TIMEOUT_VALUE) {
-				/* return in case of Timeout detected */
-				return HAL_TIMEOUT;
-			}
-		}
+    /* Disable PLLSAI Clock */
+    __HAL_RCC_PLLSAI_DISABLE();
+    /* Get tick */
+    tickstart = HAL_GetTick();
+    /* Wait till PLLSAI is disabled */
+    while(__HAL_RCC_PLLSAI_GET_FLAG() != RESET)
+    {
+      if((HAL_GetTick() - tickstart ) > PLLSAI_TIMEOUT_VALUE)
+      {
+        /* return in case of Timeout detected */
+        return HAL_TIMEOUT;
+      }
+    }
 
-		/*---------------------------- SAI configuration -------------------------*/
-		/* In Case of SAI Clock Configuration through PLLSAI, PLLSAIQ and PLLSAI_DIVQ must
-		 be added only for SAI configuration */
-		if (((PeriphClkInit->PeriphClockSelection) & RCC_PERIPHCLK_SAI_PLLSAI)
-				== (RCC_PERIPHCLK_SAI_PLLSAI)) {
-			assert_param(IS_RCC_PLLSAIQ_VALUE(PeriphClkInit->PLLSAI.PLLSAIQ));
-			assert_param(IS_RCC_PLLSAI_DIVQ_VALUE(PeriphClkInit->PLLSAIDivQ));
+    /*---------------------------- SAI configuration -------------------------*/
+    /* In Case of SAI Clock Configuration through PLLSAI, PLLSAIQ and PLLSAI_DIVQ must
+       be added only for SAI configuration */
+    if(((PeriphClkInit->PeriphClockSelection) & RCC_PERIPHCLK_SAI_PLLSAI) == (RCC_PERIPHCLK_SAI_PLLSAI))
+    {
+      assert_param(IS_RCC_PLLSAIQ_VALUE(PeriphClkInit->PLLSAI.PLLSAIQ));
+      assert_param(IS_RCC_PLLSAI_DIVQ_VALUE(PeriphClkInit->PLLSAIDivQ));
 
-			/* Read PLLSAIR value from PLLSAICFGR register (this value is not need for SAI configuration) */
-			tmpreg1 = ((RCC->PLLSAICFGR & RCC_PLLSAICFGR_PLLSAIR)
-					>> RCC_PLLSAICFGR_PLLSAIR_Pos);
-			/* PLLSAI_VCO Input  = PLL_SOURCE/PLLM */
-			/* PLLSAI_VCO Output = PLLSAI_VCO Input * PLLSAIN */
-			/* SAI_CLK(first level) = PLLSAI_VCO Output/PLLSAIQ */
-			__HAL_RCC_PLLSAI_CONFIG(PeriphClkInit->PLLSAI.PLLSAIN,
-					PeriphClkInit->PLLSAI.PLLSAIQ, tmpreg1);
-			/* SAI_CLK_x = SAI_CLK(first level)/PLLSAIDIVQ */
-			__HAL_RCC_PLLSAI_PLLSAICLKDIVQ_CONFIG(PeriphClkInit->PLLSAIDivQ);
-		}
+      /* Read PLLSAIR value from PLLSAICFGR register (this value is not need for SAI configuration) */
+      tmpreg1 = ((RCC->PLLSAICFGR & RCC_PLLSAICFGR_PLLSAIR) >> RCC_PLLSAICFGR_PLLSAIR_Pos);
+      /* PLLSAI_VCO Input  = PLL_SOURCE/PLLM */
+      /* PLLSAI_VCO Output = PLLSAI_VCO Input * PLLSAIN */
+      /* SAI_CLK(first level) = PLLSAI_VCO Output/PLLSAIQ */
+      __HAL_RCC_PLLSAI_CONFIG(PeriphClkInit->PLLSAI.PLLSAIN , PeriphClkInit->PLLSAI.PLLSAIQ, tmpreg1);
+      /* SAI_CLK_x = SAI_CLK(first level)/PLLSAIDIVQ */
+      __HAL_RCC_PLLSAI_PLLSAICLKDIVQ_CONFIG(PeriphClkInit->PLLSAIDivQ);
+    }
 
-		/*---------------------------- LTDC configuration ------------------------*/
-		if (((PeriphClkInit->PeriphClockSelection) & RCC_PERIPHCLK_LTDC)
-				== (RCC_PERIPHCLK_LTDC)) {
-			assert_param(IS_RCC_PLLSAIR_VALUE(PeriphClkInit->PLLSAI.PLLSAIR));
-			assert_param(IS_RCC_PLLSAI_DIVR_VALUE(PeriphClkInit->PLLSAIDivR));
+    /*---------------------------- LTDC configuration ------------------------*/
+    if(((PeriphClkInit->PeriphClockSelection) & RCC_PERIPHCLK_LTDC) == (RCC_PERIPHCLK_LTDC))
+    {
+      assert_param(IS_RCC_PLLSAIR_VALUE(PeriphClkInit->PLLSAI.PLLSAIR));
+      assert_param(IS_RCC_PLLSAI_DIVR_VALUE(PeriphClkInit->PLLSAIDivR));
 
-			/* Read PLLSAIR value from PLLSAICFGR register (this value is not need for SAI configuration) */
-			tmpreg1 = ((RCC->PLLSAICFGR & RCC_PLLSAICFGR_PLLSAIQ)
-					>> RCC_PLLSAICFGR_PLLSAIQ_Pos);
-			/* PLLSAI_VCO Input  = PLL_SOURCE/PLLM */
-			/* PLLSAI_VCO Output = PLLSAI_VCO Input * PLLSAIN */
-			/* LTDC_CLK(first level) = PLLSAI_VCO Output/PLLSAIR */
-			__HAL_RCC_PLLSAI_CONFIG(PeriphClkInit->PLLSAI.PLLSAIN, tmpreg1,
-					PeriphClkInit->PLLSAI.PLLSAIR);
-			/* LTDC_CLK = LTDC_CLK(first level)/PLLSAIDIVR */
-			__HAL_RCC_PLLSAI_PLLSAICLKDIVR_CONFIG(PeriphClkInit->PLLSAIDivR);
-		}
-		/* Enable PLLSAI Clock */
-		__HAL_RCC_PLLSAI_ENABLE();
-		/* Get tick */
-		tickstart = HAL_GetTick();
-		/* Wait till PLLSAI is ready */
-		while (__HAL_RCC_PLLSAI_GET_FLAG() == RESET) {
-			if ((HAL_GetTick() - tickstart) > PLLSAI_TIMEOUT_VALUE) {
-				/* return in case of Timeout detected */
-				return HAL_TIMEOUT;
-			}
-		}
-	}
-	/*--------------------------------------------------------------------------*/
+      /* Read PLLSAIR value from PLLSAICFGR register (this value is not need for SAI configuration) */
+      tmpreg1 = ((RCC->PLLSAICFGR & RCC_PLLSAICFGR_PLLSAIQ) >> RCC_PLLSAICFGR_PLLSAIQ_Pos);
+      /* PLLSAI_VCO Input  = PLL_SOURCE/PLLM */
+      /* PLLSAI_VCO Output = PLLSAI_VCO Input * PLLSAIN */
+      /* LTDC_CLK(first level) = PLLSAI_VCO Output/PLLSAIR */
+      __HAL_RCC_PLLSAI_CONFIG(PeriphClkInit->PLLSAI.PLLSAIN , tmpreg1, PeriphClkInit->PLLSAI.PLLSAIR);
+      /* LTDC_CLK = LTDC_CLK(first level)/PLLSAIDIVR */
+      __HAL_RCC_PLLSAI_PLLSAICLKDIVR_CONFIG(PeriphClkInit->PLLSAIDivR);
+    }
+    /* Enable PLLSAI Clock */
+    __HAL_RCC_PLLSAI_ENABLE();
+    /* Get tick */
+    tickstart = HAL_GetTick();
+    /* Wait till PLLSAI is ready */
+    while(__HAL_RCC_PLLSAI_GET_FLAG() == RESET)
+    {
+      if((HAL_GetTick() - tickstart ) > PLLSAI_TIMEOUT_VALUE)
+      {
+        /* return in case of Timeout detected */
+        return HAL_TIMEOUT;
+      }
+    }
+  }
+  /*--------------------------------------------------------------------------*/
 
-	/*---------------------------- RTC configuration ---------------------------*/
-	if (((PeriphClkInit->PeriphClockSelection) & RCC_PERIPHCLK_RTC)
-			== (RCC_PERIPHCLK_RTC)) {
-		/* Check for RTC Parameters used to output RTCCLK */
-		assert_param(IS_RCC_RTCCLKSOURCE(PeriphClkInit->RTCClockSelection));
+  /*---------------------------- RTC configuration ---------------------------*/
+  if(((PeriphClkInit->PeriphClockSelection) & RCC_PERIPHCLK_RTC) == (RCC_PERIPHCLK_RTC))
+  {
+    /* Check for RTC Parameters used to output RTCCLK */
+    assert_param(IS_RCC_RTCCLKSOURCE(PeriphClkInit->RTCClockSelection));
 
-		/* Enable Power Clock*/
-		__HAL_RCC_PWR_CLK_ENABLE();
+    /* Enable Power Clock*/
+    __HAL_RCC_PWR_CLK_ENABLE();
 
-		/* Enable write access to Backup domain */
-		PWR->CR |= PWR_CR_DBP;
+    /* Enable write access to Backup domain */
+    PWR->CR |= PWR_CR_DBP;
 
-		/* Get tick */
-		tickstart = HAL_GetTick();
+    /* Get tick */
+    tickstart = HAL_GetTick();
 
-		while ((PWR->CR & PWR_CR_DBP) == RESET) {
-			if ((HAL_GetTick() - tickstart) > RCC_DBP_TIMEOUT_VALUE) {
-				return HAL_TIMEOUT;
-			}
-		}
-		/* Reset the Backup domain only if the RTC Clock source selection is modified from reset value */
-		tmpreg1 = (RCC->BDCR & RCC_BDCR_RTCSEL);
-		if ((tmpreg1 != 0x00000000U)
-				&& ((tmpreg1)
-						!= (PeriphClkInit->RTCClockSelection & RCC_BDCR_RTCSEL))) {
-			/* Store the content of BDCR register before the reset of Backup Domain */
-			tmpreg1 = (RCC->BDCR & ~(RCC_BDCR_RTCSEL));
-			/* RTC Clock selection can be changed only if the Backup Domain is reset */
-			__HAL_RCC_BACKUPRESET_FORCE();
-			__HAL_RCC_BACKUPRESET_RELEASE();
-			/* Restore the Content of BDCR register */
-			RCC->BDCR = tmpreg1;
+    while((PWR->CR & PWR_CR_DBP) == RESET)
+    {
+      if((HAL_GetTick() - tickstart ) > RCC_DBP_TIMEOUT_VALUE)
+      {
+        return HAL_TIMEOUT;
+      }
+    }
+    /* Reset the Backup domain only if the RTC Clock source selection is modified from reset value */
+    tmpreg1 = (RCC->BDCR & RCC_BDCR_RTCSEL);
+    if((tmpreg1 != 0x00000000U) && ((tmpreg1) != (PeriphClkInit->RTCClockSelection & RCC_BDCR_RTCSEL)))
+    {
+      /* Store the content of BDCR register before the reset of Backup Domain */
+      tmpreg1 = (RCC->BDCR & ~(RCC_BDCR_RTCSEL));
+      /* RTC Clock selection can be changed only if the Backup Domain is reset */
+      __HAL_RCC_BACKUPRESET_FORCE();
+      __HAL_RCC_BACKUPRESET_RELEASE();
+      /* Restore the Content of BDCR register */
+      RCC->BDCR = tmpreg1;
 
-			/* Wait for LSE reactivation if LSE was enable prior to Backup Domain reset */
-			if (HAL_IS_BIT_SET(RCC->BDCR, RCC_BDCR_LSEON)) {
-				/* Get tick */
-				tickstart = HAL_GetTick();
+      /* Wait for LSE reactivation if LSE was enable prior to Backup Domain reset */
+      if(HAL_IS_BIT_SET(RCC->BDCR, RCC_BDCR_LSEON))
+      {
+        /* Get tick */
+        tickstart = HAL_GetTick();
 
-				/* Wait till LSE is ready */
-				while (__HAL_RCC_GET_FLAG(RCC_FLAG_LSERDY) == RESET) {
-					if ((HAL_GetTick() - tickstart) > RCC_LSE_TIMEOUT_VALUE) {
-						return HAL_TIMEOUT;
-					}
-				}
-			}
-		}
-		__HAL_RCC_RTC_CONFIG(PeriphClkInit->RTCClockSelection);
-	}
-	/*--------------------------------------------------------------------------*/
+        /* Wait till LSE is ready */
+        while(__HAL_RCC_GET_FLAG(RCC_FLAG_LSERDY) == RESET)
+        {
+          if((HAL_GetTick() - tickstart ) > RCC_LSE_TIMEOUT_VALUE)
+          {
+            return HAL_TIMEOUT;
+          }
+        }
+      }
+    }
+    __HAL_RCC_RTC_CONFIG(PeriphClkInit->RTCClockSelection);
+  }
+  /*--------------------------------------------------------------------------*/
 
-	/*---------------------------- TIM configuration ---------------------------*/
-	if (((PeriphClkInit->PeriphClockSelection) & RCC_PERIPHCLK_TIM)
-			== (RCC_PERIPHCLK_TIM)) {
-		__HAL_RCC_TIMCLKPRESCALER(PeriphClkInit->TIMPresSelection);
-	}
-	return HAL_OK;
+  /*---------------------------- TIM configuration ---------------------------*/
+  if(((PeriphClkInit->PeriphClockSelection) & RCC_PERIPHCLK_TIM) == (RCC_PERIPHCLK_TIM))
+  {
+    __HAL_RCC_TIMCLKPRESCALER(PeriphClkInit->TIMPresSelection);
+  }
+  return HAL_OK;
 }
 
 /**
- * @brief  Configures the PeriphClkInit according to the internal
- * RCC configuration registers.
- * @param  PeriphClkInit pointer to an RCC_PeriphCLKInitTypeDef structure that
- *         will be configured.
- * @retval None
- */
-void HAL_RCCEx_GetPeriphCLKConfig(RCC_PeriphCLKInitTypeDef *PeriphClkInit) {
-	uint32_t tempreg;
+  * @brief  Configures the PeriphClkInit according to the internal
+  * RCC configuration registers.
+  * @param  PeriphClkInit pointer to an RCC_PeriphCLKInitTypeDef structure that
+  *         will be configured.
+  * @retval None
+  */
+void HAL_RCCEx_GetPeriphCLKConfig(RCC_PeriphCLKInitTypeDef  *PeriphClkInit)
+{
+  uint32_t tempreg;
 
-	/* Set all possible values for the extended clock type parameter------------*/
-	PeriphClkInit->PeriphClockSelection = RCC_PERIPHCLK_I2S
-			| RCC_PERIPHCLK_SAI_PLLSAI | RCC_PERIPHCLK_SAI_PLLI2S
-			| RCC_PERIPHCLK_LTDC | RCC_PERIPHCLK_TIM | RCC_PERIPHCLK_RTC;
+  /* Set all possible values for the extended clock type parameter------------*/
+  PeriphClkInit->PeriphClockSelection = RCC_PERIPHCLK_I2S | RCC_PERIPHCLK_SAI_PLLSAI | RCC_PERIPHCLK_SAI_PLLI2S | RCC_PERIPHCLK_LTDC | RCC_PERIPHCLK_TIM | RCC_PERIPHCLK_RTC;
 
-	/* Get the PLLI2S Clock configuration -----------------------------------------------*/
-	PeriphClkInit->PLLI2S.PLLI2SN = (uint32_t) ((RCC->PLLI2SCFGR
-			& RCC_PLLI2SCFGR_PLLI2SN) >> RCC_PLLI2SCFGR_PLLI2SN_Pos);
-	PeriphClkInit->PLLI2S.PLLI2SR = (uint32_t) ((RCC->PLLI2SCFGR
-			& RCC_PLLI2SCFGR_PLLI2SR) >> RCC_PLLI2SCFGR_PLLI2SR_Pos);
-	PeriphClkInit->PLLI2S.PLLI2SQ = (uint32_t) ((RCC->PLLI2SCFGR
-			& RCC_PLLI2SCFGR_PLLI2SQ) >> RCC_PLLI2SCFGR_PLLI2SQ_Pos);
-	/* Get the PLLSAI Clock configuration -----------------------------------------------*/
-	PeriphClkInit->PLLSAI.PLLSAIN = (uint32_t) ((RCC->PLLSAICFGR
-			& RCC_PLLSAICFGR_PLLSAIN) >> RCC_PLLSAICFGR_PLLSAIN_Pos);
-	PeriphClkInit->PLLSAI.PLLSAIR = (uint32_t) ((RCC->PLLSAICFGR
-			& RCC_PLLSAICFGR_PLLSAIR) >> RCC_PLLSAICFGR_PLLSAIR_Pos);
-	PeriphClkInit->PLLSAI.PLLSAIQ = (uint32_t) ((RCC->PLLSAICFGR
-			& RCC_PLLSAICFGR_PLLSAIQ) >> RCC_PLLSAICFGR_PLLSAIQ_Pos);
-	/* Get the PLLSAI/PLLI2S division factors -----------------------------------------------*/
-	PeriphClkInit->PLLI2SDivQ = (uint32_t) ((RCC->DCKCFGR
-			& RCC_DCKCFGR_PLLI2SDIVQ) >> RCC_DCKCFGR_PLLI2SDIVQ_Pos);
-	PeriphClkInit->PLLSAIDivQ = (uint32_t) ((RCC->DCKCFGR
-			& RCC_DCKCFGR_PLLSAIDIVQ) >> RCC_DCKCFGR_PLLSAIDIVQ_Pos);
-	PeriphClkInit->PLLSAIDivR = (uint32_t) (RCC->DCKCFGR
-			& RCC_DCKCFGR_PLLSAIDIVR);
-	/* Get the RTC Clock configuration -----------------------------------------------*/
-	tempreg = (RCC->CFGR & RCC_CFGR_RTCPRE);
-	PeriphClkInit->RTCClockSelection = (uint32_t) ((tempreg)
-			| (RCC->BDCR & RCC_BDCR_RTCSEL));
+  /* Get the PLLI2S Clock configuration -----------------------------------------------*/
+  PeriphClkInit->PLLI2S.PLLI2SN = (uint32_t)((RCC->PLLI2SCFGR & RCC_PLLI2SCFGR_PLLI2SN) >> RCC_PLLI2SCFGR_PLLI2SN_Pos);
+  PeriphClkInit->PLLI2S.PLLI2SR = (uint32_t)((RCC->PLLI2SCFGR & RCC_PLLI2SCFGR_PLLI2SR) >> RCC_PLLI2SCFGR_PLLI2SR_Pos);
+  PeriphClkInit->PLLI2S.PLLI2SQ = (uint32_t)((RCC->PLLI2SCFGR & RCC_PLLI2SCFGR_PLLI2SQ) >> RCC_PLLI2SCFGR_PLLI2SQ_Pos);
+  /* Get the PLLSAI Clock configuration -----------------------------------------------*/
+  PeriphClkInit->PLLSAI.PLLSAIN = (uint32_t)((RCC->PLLSAICFGR & RCC_PLLSAICFGR_PLLSAIN) >> RCC_PLLSAICFGR_PLLSAIN_Pos);
+  PeriphClkInit->PLLSAI.PLLSAIR = (uint32_t)((RCC->PLLSAICFGR & RCC_PLLSAICFGR_PLLSAIR) >> RCC_PLLSAICFGR_PLLSAIR_Pos);
+  PeriphClkInit->PLLSAI.PLLSAIQ = (uint32_t)((RCC->PLLSAICFGR & RCC_PLLSAICFGR_PLLSAIQ) >> RCC_PLLSAICFGR_PLLSAIQ_Pos);
+  /* Get the PLLSAI/PLLI2S division factors -----------------------------------------------*/
+  PeriphClkInit->PLLI2SDivQ = (uint32_t)((RCC->DCKCFGR & RCC_DCKCFGR_PLLI2SDIVQ) >> RCC_DCKCFGR_PLLI2SDIVQ_Pos);
+  PeriphClkInit->PLLSAIDivQ = (uint32_t)((RCC->DCKCFGR & RCC_DCKCFGR_PLLSAIDIVQ) >> RCC_DCKCFGR_PLLSAIDIVQ_Pos);
+  PeriphClkInit->PLLSAIDivR = (uint32_t)(RCC->DCKCFGR & RCC_DCKCFGR_PLLSAIDIVR);
+  /* Get the RTC Clock configuration -----------------------------------------------*/
+  tempreg = (RCC->CFGR & RCC_CFGR_RTCPRE);
+  PeriphClkInit->RTCClockSelection = (uint32_t)((tempreg) | (RCC->BDCR & RCC_BDCR_RTCSEL));
 
-	if ((RCC->DCKCFGR & RCC_DCKCFGR_TIMPRE) == RESET) {
-		PeriphClkInit->TIMPresSelection = RCC_TIMPRES_DESACTIVATED;
-	} else {
-		PeriphClkInit->TIMPresSelection = RCC_TIMPRES_ACTIVATED;
-	}
+  if ((RCC->DCKCFGR & RCC_DCKCFGR_TIMPRE) == RESET)
+  {
+    PeriphClkInit->TIMPresSelection = RCC_TIMPRES_DESACTIVATED;
+  }
+  else
+  {
+    PeriphClkInit->TIMPresSelection = RCC_TIMPRES_ACTIVATED;
+  }
 }
 
 /**
- * @brief  Return the peripheral clock frequency for a given peripheral(SAI..)
- * @note   Return 0 if peripheral clock identifier not managed by this API
- * @param  PeriphClk Peripheral clock identifier
- *         This parameter can be one of the following values:
- *            @arg RCC_PERIPHCLK_I2S: I2S peripheral clock
- * @retval Frequency in KHz
- */
-uint32_t HAL_RCCEx_GetPeriphCLKFreq(uint32_t PeriphClk) {
-	/* This variable used to store the I2S clock frequency (value in Hz) */
-	uint32_t frequency = 0U;
-	/* This variable used to store the VCO Input (value in Hz) */
-	uint32_t vcoinput = 0U;
-	uint32_t srcclk = 0U;
-	/* This variable used to store the VCO Output (value in Hz) */
-	uint32_t vcooutput = 0U;
-	switch (PeriphClk) {
-	case RCC_PERIPHCLK_I2S: {
-		/* Get the current I2S source */
-		srcclk = __HAL_RCC_GET_I2S_SOURCE();
-		switch (srcclk) {
-		/* Check if I2S clock selection is External clock mapped on the I2S_CKIN pin used as I2S clock */
-		case RCC_I2SCLKSOURCE_EXT: {
-			/* Set the I2S clock to the external clock  value */
-			frequency = EXTERNAL_CLOCK_VALUE;
-			break;
-		}
-			/* Check if I2S clock selection is PLLI2S VCO output clock divided by PLLI2SR used as I2S clock */
-		case RCC_I2SCLKSOURCE_PLLI2S: {
-			/* Configure the PLLI2S division factor */
-			/* PLLI2S_VCO Input  = PLL_SOURCE/PLLM */
-			if ((RCC->PLLCFGR & RCC_PLLCFGR_PLLSRC) == RCC_PLLSOURCE_HSE) {
-				/* Get the I2S source clock value */
-				vcoinput = (uint32_t) (HSE_VALUE
-						/ (uint32_t) (RCC->PLLCFGR & RCC_PLLCFGR_PLLM));
-			} else {
-				/* Get the I2S source clock value */
-				vcoinput = (uint32_t) (HSI_VALUE
-						/ (uint32_t) (RCC->PLLCFGR & RCC_PLLCFGR_PLLM));
-			}
+  * @brief  Return the peripheral clock frequency for a given peripheral(SAI..)
+  * @note   Return 0 if peripheral clock identifier not managed by this API
+  * @param  PeriphClk Peripheral clock identifier
+  *         This parameter can be one of the following values:
+  *            @arg RCC_PERIPHCLK_I2S: I2S peripheral clock
+  * @retval Frequency in KHz
+  */
+uint32_t HAL_RCCEx_GetPeriphCLKFreq(uint32_t PeriphClk)
+{
+  /* This variable used to store the I2S clock frequency (value in Hz) */
+  uint32_t frequency = 0U;
+  /* This variable used to store the VCO Input (value in Hz) */
+  uint32_t vcoinput = 0U;
+  uint32_t srcclk = 0U;
+  /* This variable used to store the VCO Output (value in Hz) */
+  uint32_t vcooutput = 0U;
+  switch (PeriphClk)
+  {
+  case RCC_PERIPHCLK_I2S:
+    {
+      /* Get the current I2S source */
+      srcclk = __HAL_RCC_GET_I2S_SOURCE();
+      switch (srcclk)
+      {
+      /* Check if I2S clock selection is External clock mapped on the I2S_CKIN pin used as I2S clock */
+      case RCC_I2SCLKSOURCE_EXT:
+        {
+          /* Set the I2S clock to the external clock  value */
+          frequency = EXTERNAL_CLOCK_VALUE;
+          break;
+        }
+      /* Check if I2S clock selection is PLLI2S VCO output clock divided by PLLI2SR used as I2S clock */
+      case RCC_I2SCLKSOURCE_PLLI2S:
+        {
+          /* Configure the PLLI2S division factor */
+          /* PLLI2S_VCO Input  = PLL_SOURCE/PLLM */
+          if((RCC->PLLCFGR & RCC_PLLCFGR_PLLSRC) == RCC_PLLSOURCE_HSE)
+          {
+            /* Get the I2S source clock value */
+            vcoinput = (uint32_t)(HSE_VALUE / (uint32_t)(RCC->PLLCFGR & RCC_PLLCFGR_PLLM));
+          }
+          else
+          {
+            /* Get the I2S source clock value */
+            vcoinput = (uint32_t)(HSI_VALUE / (uint32_t)(RCC->PLLCFGR & RCC_PLLCFGR_PLLM));
+          }
 
-			/* PLLI2S_VCO Output = PLLI2S_VCO Input * PLLI2SN */
-			vcooutput = (uint32_t) (vcoinput
-					* (((RCC->PLLI2SCFGR & RCC_PLLI2SCFGR_PLLI2SN) >> 6U)
-							& (RCC_PLLI2SCFGR_PLLI2SN >> 6U)));
-			/* I2S_CLK = PLLI2S_VCO Output/PLLI2SR */
-			frequency = (uint32_t) (vcooutput
-					/ (((RCC->PLLI2SCFGR & RCC_PLLI2SCFGR_PLLI2SR) >> 28U)
-							& (RCC_PLLI2SCFGR_PLLI2SR >> 28U)));
-			break;
-		}
-			/* Clock not enabled for I2S*/
-		default: {
-			frequency = 0U;
-			break;
-		}
-		}
-		break;
-	}
-	}
-	return frequency;
+          /* PLLI2S_VCO Output = PLLI2S_VCO Input * PLLI2SN */
+          vcooutput = (uint32_t)(vcoinput * (((RCC->PLLI2SCFGR & RCC_PLLI2SCFGR_PLLI2SN) >> 6U) & (RCC_PLLI2SCFGR_PLLI2SN >> 6U)));
+          /* I2S_CLK = PLLI2S_VCO Output/PLLI2SR */
+          frequency = (uint32_t)(vcooutput /(((RCC->PLLI2SCFGR & RCC_PLLI2SCFGR_PLLI2SR) >> 28U) & (RCC_PLLI2SCFGR_PLLI2SR >> 28U)));
+          break;
+        }
+        /* Clock not enabled for I2S*/
+      default:
+        {
+          frequency = 0U;
+          break;
+        }
+      }
+      break;
+    }
+  }
+  return frequency;
 }
 #endif /* STM32F427xx || STM32F437xx || STM32F429xx || STM32F439xx */
 
@@ -2786,30 +2782,31 @@ void HAL_RCCEx_SelectLSEMode(uint8_t Mode)
 /** @defgroup RCCEx_Exported_Functions_Group2 Extended Clock management functions
  *  @brief  Extended Clock management functions
  *
- @verbatim   
+@verbatim   
  ===============================================================================
- ##### Extended clock management functions  #####
+                ##### Extended clock management functions  #####
  ===============================================================================
- [..]
- This subsection provides a set of functions allowing to control the 
- activation or deactivation of PLLI2S, PLLSAI.
- @endverbatim
- * @{
- */
+    [..]
+    This subsection provides a set of functions allowing to control the 
+    activation or deactivation of PLLI2S, PLLSAI.
+@endverbatim
+  * @{
+  */
 
 #if defined(RCC_PLLI2S_SUPPORT)
 /**
- * @brief  Enable PLLI2S.
- * @param  PLLI2SInit  pointer to an RCC_PLLI2SInitTypeDef structure that
- *         contains the configuration information for the PLLI2S
- * @retval HAL status
- */
-HAL_StatusTypeDef HAL_RCCEx_EnablePLLI2S(RCC_PLLI2SInitTypeDef *PLLI2SInit) {
-	uint32_t tickstart;
+  * @brief  Enable PLLI2S.
+  * @param  PLLI2SInit  pointer to an RCC_PLLI2SInitTypeDef structure that
+  *         contains the configuration information for the PLLI2S
+  * @retval HAL status
+  */
+HAL_StatusTypeDef HAL_RCCEx_EnablePLLI2S(RCC_PLLI2SInitTypeDef  *PLLI2SInit)
+{
+  uint32_t tickstart;
 
-	/* Check for parameters */
-	assert_param(IS_RCC_PLLI2SN_VALUE(PLLI2SInit->PLLI2SN));
-	assert_param(IS_RCC_PLLI2SR_VALUE(PLLI2SInit->PLLI2SR));
+  /* Check for parameters */
+  assert_param(IS_RCC_PLLI2SN_VALUE(PLLI2SInit->PLLI2SN));
+  assert_param(IS_RCC_PLLI2SR_VALUE(PLLI2SInit->PLLI2SR));
 #if defined(RCC_PLLI2SCFGR_PLLI2SM)
   assert_param(IS_RCC_PLLI2SM_VALUE(PLLI2SInit->PLLI2SM));
 #endif /* RCC_PLLI2SCFGR_PLLI2SM */
@@ -2817,22 +2814,24 @@ HAL_StatusTypeDef HAL_RCCEx_EnablePLLI2S(RCC_PLLI2SInitTypeDef *PLLI2SInit) {
   assert_param(IS_RCC_PLLI2SP_VALUE(PLLI2SInit->PLLI2SP));
 #endif /* RCC_PLLI2SCFGR_PLLI2SP */
 #if defined(RCC_PLLI2SCFGR_PLLI2SQ)
-	assert_param(IS_RCC_PLLI2SQ_VALUE(PLLI2SInit->PLLI2SQ));
+  assert_param(IS_RCC_PLLI2SQ_VALUE(PLLI2SInit->PLLI2SQ));
 #endif /* RCC_PLLI2SCFGR_PLLI2SQ */
 
-	/* Disable the PLLI2S */
-	__HAL_RCC_PLLI2S_DISABLE();
+  /* Disable the PLLI2S */
+  __HAL_RCC_PLLI2S_DISABLE();
 
-	/* Wait till PLLI2S is disabled */
-	tickstart = HAL_GetTick();
-	while (__HAL_RCC_GET_FLAG(RCC_FLAG_PLLI2SRDY) != RESET) {
-		if ((HAL_GetTick() - tickstart) > PLLI2S_TIMEOUT_VALUE) {
-			/* return in case of Timeout detected */
-			return HAL_TIMEOUT;
-		}
-	}
+  /* Wait till PLLI2S is disabled */
+  tickstart = HAL_GetTick();
+  while(__HAL_RCC_GET_FLAG(RCC_FLAG_PLLI2SRDY) != RESET)
+  {
+    if((HAL_GetTick() - tickstart ) > PLLI2S_TIMEOUT_VALUE)
+    {
+      /* return in case of Timeout detected */
+      return HAL_TIMEOUT;
+    }
+  }
 
-	/* Configure the PLLI2S division factors */
+  /* Configure the PLLI2S division factors */
 #if defined(STM32F446xx)
   /* PLLI2S_VCO = f(VCO clock) = f(PLLI2S clock input) * (PLLI2SN/PLLI2SM) */
   /* I2SPCLK = PLLI2S_VCO / PLLI2SP */
@@ -2849,11 +2848,10 @@ HAL_StatusTypeDef HAL_RCCEx_EnablePLLI2S(RCC_PLLI2SInitTypeDef *PLLI2SInit) {
                           PLLI2SInit->PLLI2SQ, PLLI2SInit->PLLI2SR);
 #elif defined(STM32F427xx) || defined(STM32F437xx) || defined(STM32F429xx) || defined(STM32F439xx) ||\
       defined(STM32F469xx) || defined(STM32F479xx)
-	/* PLLI2S_VCO = f(VCO clock) = f(PLLI2S clock input) * PLLI2SN */
-	/* I2SQCLK = PLLI2S_VCO / PLLI2SQ */
-	/* I2SRCLK = PLLI2S_VCO / PLLI2SR */
-	__HAL_RCC_PLLI2S_SAICLK_CONFIG(PLLI2SInit->PLLI2SN, PLLI2SInit->PLLI2SQ,
-			PLLI2SInit->PLLI2SR);
+  /* PLLI2S_VCO = f(VCO clock) = f(PLLI2S clock input) * PLLI2SN */
+  /* I2SQCLK = PLLI2S_VCO / PLLI2SQ */
+  /* I2SRCLK = PLLI2S_VCO / PLLI2SR */
+  __HAL_RCC_PLLI2S_SAICLK_CONFIG(PLLI2SInit->PLLI2SN, PLLI2SInit->PLLI2SQ, PLLI2SInit->PLLI2SR);
 #elif defined(STM32F411xE)
   /* PLLI2S_VCO = f(VCO clock) = f(PLLI2S clock input) * (PLLI2SN/PLLI2SM) */
   /* I2SRCLK = PLLI2S_VCO / PLLI2SR */
@@ -2864,58 +2862,64 @@ HAL_StatusTypeDef HAL_RCCEx_EnablePLLI2S(RCC_PLLI2SInitTypeDef *PLLI2SInit) {
   __HAL_RCC_PLLI2S_CONFIG(PLLI2SInit->PLLI2SN, PLLI2SInit->PLLI2SR);
 #endif /* STM32F446xx */
 
-	/* Enable the PLLI2S */
-	__HAL_RCC_PLLI2S_ENABLE();
+  /* Enable the PLLI2S */
+  __HAL_RCC_PLLI2S_ENABLE();
 
-	/* Wait till PLLI2S is ready */
-	tickstart = HAL_GetTick();
-	while (__HAL_RCC_GET_FLAG(RCC_FLAG_PLLI2SRDY) == RESET) {
-		if ((HAL_GetTick() - tickstart) > PLLI2S_TIMEOUT_VALUE) {
-			/* return in case of Timeout detected */
-			return HAL_TIMEOUT;
-		}
-	}
+  /* Wait till PLLI2S is ready */
+  tickstart = HAL_GetTick();
+  while(__HAL_RCC_GET_FLAG(RCC_FLAG_PLLI2SRDY) == RESET)
+  {
+    if((HAL_GetTick() - tickstart ) > PLLI2S_TIMEOUT_VALUE)
+    {
+      /* return in case of Timeout detected */
+      return HAL_TIMEOUT;
+    }
+  }
 
-	return HAL_OK;
+ return HAL_OK;
 }
 
 /**
- * @brief  Disable PLLI2S.
- * @retval HAL status
- */
-HAL_StatusTypeDef HAL_RCCEx_DisablePLLI2S(void) {
-	uint32_t tickstart;
+  * @brief  Disable PLLI2S.
+  * @retval HAL status
+  */
+HAL_StatusTypeDef HAL_RCCEx_DisablePLLI2S(void)
+{
+  uint32_t tickstart;
 
-	/* Disable the PLLI2S */
-	__HAL_RCC_PLLI2S_DISABLE();
+  /* Disable the PLLI2S */
+  __HAL_RCC_PLLI2S_DISABLE();
 
-	/* Wait till PLLI2S is disabled */
-	tickstart = HAL_GetTick();
-	while (READ_BIT(RCC->CR, RCC_CR_PLLI2SRDY) != RESET) {
-		if ((HAL_GetTick() - tickstart) > PLLI2S_TIMEOUT_VALUE) {
-			/* return in case of Timeout detected */
-			return HAL_TIMEOUT;
-		}
-	}
+  /* Wait till PLLI2S is disabled */
+  tickstart = HAL_GetTick();
+  while(READ_BIT(RCC->CR, RCC_CR_PLLI2SRDY) != RESET)
+  {
+    if((HAL_GetTick() - tickstart) > PLLI2S_TIMEOUT_VALUE)
+    {
+      /* return in case of Timeout detected */
+      return HAL_TIMEOUT;
+    }
+  }
 
-	return HAL_OK;
+  return HAL_OK;
 }
 
 #endif /* RCC_PLLI2S_SUPPORT */
 
 #if defined(RCC_PLLSAI_SUPPORT)
 /**
- * @brief  Enable PLLSAI.
- * @param  PLLSAIInit  pointer to an RCC_PLLSAIInitTypeDef structure that
- *         contains the configuration information for the PLLSAI
- * @retval HAL status
- */
-HAL_StatusTypeDef HAL_RCCEx_EnablePLLSAI(RCC_PLLSAIInitTypeDef *PLLSAIInit) {
-	uint32_t tickstart;
+  * @brief  Enable PLLSAI.
+  * @param  PLLSAIInit  pointer to an RCC_PLLSAIInitTypeDef structure that
+  *         contains the configuration information for the PLLSAI
+  * @retval HAL status
+  */
+HAL_StatusTypeDef HAL_RCCEx_EnablePLLSAI(RCC_PLLSAIInitTypeDef  *PLLSAIInit)
+{
+  uint32_t tickstart;
 
-	/* Check for parameters */
-	assert_param(IS_RCC_PLLSAIN_VALUE(PLLSAIInit->PLLSAIN));
-	assert_param(IS_RCC_PLLSAIQ_VALUE(PLLSAIInit->PLLSAIQ));
+  /* Check for parameters */
+  assert_param(IS_RCC_PLLSAIN_VALUE(PLLSAIInit->PLLSAIN));
+  assert_param(IS_RCC_PLLSAIQ_VALUE(PLLSAIInit->PLLSAIQ));
 #if defined(RCC_PLLSAICFGR_PLLSAIM)
   assert_param(IS_RCC_PLLSAIM_VALUE(PLLSAIInit->PLLSAIM));
 #endif /* RCC_PLLSAICFGR_PLLSAIM */
@@ -2923,22 +2927,24 @@ HAL_StatusTypeDef HAL_RCCEx_EnablePLLSAI(RCC_PLLSAIInitTypeDef *PLLSAIInit) {
   assert_param(IS_RCC_PLLSAIP_VALUE(PLLSAIInit->PLLSAIP));
 #endif /* RCC_PLLSAICFGR_PLLSAIP */
 #if defined(RCC_PLLSAICFGR_PLLSAIR)
-	assert_param(IS_RCC_PLLSAIR_VALUE(PLLSAIInit->PLLSAIR));
+  assert_param(IS_RCC_PLLSAIR_VALUE(PLLSAIInit->PLLSAIR));
 #endif /* RCC_PLLSAICFGR_PLLSAIR */
 
-	/* Disable the PLLSAI */
-	__HAL_RCC_PLLSAI_DISABLE();
+  /* Disable the PLLSAI */
+  __HAL_RCC_PLLSAI_DISABLE();
 
-	/* Wait till PLLSAI is disabled */
-	tickstart = HAL_GetTick();
-	while (__HAL_RCC_PLLSAI_GET_FLAG() != RESET) {
-		if ((HAL_GetTick() - tickstart) > PLLSAI_TIMEOUT_VALUE) {
-			/* return in case of Timeout detected */
-			return HAL_TIMEOUT;
-		}
-	}
+  /* Wait till PLLSAI is disabled */
+  tickstart = HAL_GetTick();
+  while(__HAL_RCC_PLLSAI_GET_FLAG() != RESET)
+  {
+    if((HAL_GetTick() - tickstart ) > PLLSAI_TIMEOUT_VALUE)
+    {
+      /* return in case of Timeout detected */
+      return HAL_TIMEOUT;
+    }
+  }
 
-	/* Configure the PLLSAI division factors */
+  /* Configure the PLLSAI division factors */
 #if defined(STM32F446xx)
   /* PLLSAI_VCO = f(VCO clock) = f(PLLSAI clock input) * (PLLSAIN/PLLSAIM) */
   /* SAIPCLK = PLLSAI_VCO / PLLSAIP */
@@ -2954,55 +2960,59 @@ HAL_StatusTypeDef HAL_RCCEx_EnablePLLSAI(RCC_PLLSAIInitTypeDef *PLLSAIInit) {
   __HAL_RCC_PLLSAI_CONFIG(PLLSAIInit->PLLSAIN, PLLSAIInit->PLLSAIP, \
                           PLLSAIInit->PLLSAIQ, PLLSAIInit->PLLSAIR);
 #else
-	/* PLLSAI_VCO = f(VCO clock) = f(PLLSAI clock input) x PLLSAIN */
-	/* SAIQCLK = PLLSAI_VCO / PLLSAIQ */
-	/* SAIRCLK = PLLSAI_VCO / PLLSAIR */
-	__HAL_RCC_PLLSAI_CONFIG(PLLSAIInit->PLLSAIN, PLLSAIInit->PLLSAIQ,
-			PLLSAIInit->PLLSAIR);
+  /* PLLSAI_VCO = f(VCO clock) = f(PLLSAI clock input) x PLLSAIN */
+  /* SAIQCLK = PLLSAI_VCO / PLLSAIQ */
+  /* SAIRCLK = PLLSAI_VCO / PLLSAIR */
+  __HAL_RCC_PLLSAI_CONFIG(PLLSAIInit->PLLSAIN, PLLSAIInit->PLLSAIQ, PLLSAIInit->PLLSAIR);
 #endif /* STM32F446xx */
 
-	/* Enable the PLLSAI */
-	__HAL_RCC_PLLSAI_ENABLE();
+  /* Enable the PLLSAI */
+  __HAL_RCC_PLLSAI_ENABLE();
 
-	/* Wait till PLLSAI is ready */
-	tickstart = HAL_GetTick();
-	while (__HAL_RCC_PLLSAI_GET_FLAG() == RESET) {
-		if ((HAL_GetTick() - tickstart) > PLLSAI_TIMEOUT_VALUE) {
-			/* return in case of Timeout detected */
-			return HAL_TIMEOUT;
-		}
-	}
+  /* Wait till PLLSAI is ready */
+  tickstart = HAL_GetTick();
+  while(__HAL_RCC_PLLSAI_GET_FLAG() == RESET)
+  {
+    if((HAL_GetTick() - tickstart ) > PLLSAI_TIMEOUT_VALUE)
+    {
+      /* return in case of Timeout detected */
+      return HAL_TIMEOUT;
+    }
+  }
 
-	return HAL_OK;
+ return HAL_OK;
 }
 
 /**
- * @brief  Disable PLLSAI.
- * @retval HAL status
- */
-HAL_StatusTypeDef HAL_RCCEx_DisablePLLSAI(void) {
-	uint32_t tickstart;
+  * @brief  Disable PLLSAI.
+  * @retval HAL status
+  */
+HAL_StatusTypeDef HAL_RCCEx_DisablePLLSAI(void)
+{
+  uint32_t tickstart;
 
-	/* Disable the PLLSAI */
-	__HAL_RCC_PLLSAI_DISABLE();
+  /* Disable the PLLSAI */
+  __HAL_RCC_PLLSAI_DISABLE();
 
-	/* Wait till PLLSAI is disabled */
-	tickstart = HAL_GetTick();
-	while (__HAL_RCC_PLLSAI_GET_FLAG() != RESET) {
-		if ((HAL_GetTick() - tickstart) > PLLSAI_TIMEOUT_VALUE) {
-			/* return in case of Timeout detected */
-			return HAL_TIMEOUT;
-		}
-	}
+  /* Wait till PLLSAI is disabled */
+  tickstart = HAL_GetTick();
+  while(__HAL_RCC_PLLSAI_GET_FLAG() != RESET)
+  {
+    if((HAL_GetTick() - tickstart) > PLLSAI_TIMEOUT_VALUE)
+    {
+      /* return in case of Timeout detected */
+      return HAL_TIMEOUT;
+    }
+  }
 
-	return HAL_OK;
+  return HAL_OK;
 }
 
 #endif /* RCC_PLLSAI_SUPPORT */
 
 /**
- * @}
- */
+  * @}
+  */
 
 #if defined(STM32F446xx)
 /**
@@ -3110,185 +3120,196 @@ uint32_t HAL_RCC_GetSysClockFreq(void)
 #endif /* STM32F446xx */
 
 /**
- * @}
- */
+  * @}
+  */
 
 /**
- * @}
- */
+  * @}
+  */
 
 /**
- * @brief  Resets the RCC clock configuration to the default reset state.
- * @note   The default reset state of the clock configuration is given below:
- *            - HSI ON and used as system clock source
- *            - HSE, PLL, PLLI2S and PLLSAI OFF
- *            - AHB, APB1 and APB2 prescaler set to 1.
- *            - CSS, MCO1 and MCO2 OFF
- *            - All interrupts disabled
- * @note   This function doesn't modify the configuration of the
- *            - Peripheral clocks
- *            - LSI, LSE and RTC clocks
- * @retval HAL status
- */
-HAL_StatusTypeDef HAL_RCC_DeInit(void) {
-	uint32_t tickstart;
+  * @brief  Resets the RCC clock configuration to the default reset state.
+  * @note   The default reset state of the clock configuration is given below:
+  *            - HSI ON and used as system clock source
+  *            - HSE, PLL, PLLI2S and PLLSAI OFF
+  *            - AHB, APB1 and APB2 prescaler set to 1.
+  *            - CSS, MCO1 and MCO2 OFF
+  *            - All interrupts disabled
+  * @note   This function doesn't modify the configuration of the
+  *            - Peripheral clocks
+  *            - LSI, LSE and RTC clocks
+  * @retval HAL status
+  */
+HAL_StatusTypeDef HAL_RCC_DeInit(void)
+{
+  uint32_t tickstart;
 
-	/* Get Start Tick */
-	tickstart = HAL_GetTick();
+  /* Get Start Tick */
+  tickstart = HAL_GetTick();
 
-	/* Set HSION bit to the reset value */
-	SET_BIT(RCC->CR, RCC_CR_HSION);
+  /* Set HSION bit to the reset value */
+  SET_BIT(RCC->CR, RCC_CR_HSION);
 
-	/* Wait till HSI is ready */
-	while (READ_BIT(RCC->CR, RCC_CR_HSIRDY) == RESET) {
-		if ((HAL_GetTick() - tickstart) > HSI_TIMEOUT_VALUE) {
-			return HAL_TIMEOUT;
-		}
-	}
+  /* Wait till HSI is ready */
+  while (READ_BIT(RCC->CR, RCC_CR_HSIRDY) == RESET)
+  {
+    if ((HAL_GetTick() - tickstart) > HSI_TIMEOUT_VALUE)
+    {
+      return HAL_TIMEOUT;
+    }
+  }
 
-	/* Set HSITRIM[4:0] bits to the reset value */
-	SET_BIT(RCC->CR, RCC_CR_HSITRIM_4);
+  /* Set HSITRIM[4:0] bits to the reset value */
+  SET_BIT(RCC->CR, RCC_CR_HSITRIM_4);
 
-	/* Get Start Tick */
-	tickstart = HAL_GetTick();
+  /* Get Start Tick */
+  tickstart = HAL_GetTick();
 
-	/* Reset CFGR register */
-	CLEAR_REG(RCC->CFGR);
+  /* Reset CFGR register */
+  CLEAR_REG(RCC->CFGR);
 
-	/* Wait till clock switch is ready */
-	while (READ_BIT(RCC->CFGR, RCC_CFGR_SWS) != RESET) {
-		if ((HAL_GetTick() - tickstart) > CLOCKSWITCH_TIMEOUT_VALUE) {
-			return HAL_TIMEOUT;
-		}
-	}
+  /* Wait till clock switch is ready */
+  while (READ_BIT(RCC->CFGR, RCC_CFGR_SWS) != RESET)
+  {
+    if ((HAL_GetTick() - tickstart) > CLOCKSWITCH_TIMEOUT_VALUE)
+    {
+      return HAL_TIMEOUT;
+    }
+  }
 
-	/* Get Start Tick */
-	tickstart = HAL_GetTick();
+  /* Get Start Tick */
+  tickstart = HAL_GetTick();
 
-	/* Clear HSEON, HSEBYP and CSSON bits */
-	CLEAR_BIT(RCC->CR, RCC_CR_HSEON | RCC_CR_HSEBYP | RCC_CR_CSSON);
+  /* Clear HSEON, HSEBYP and CSSON bits */
+  CLEAR_BIT(RCC->CR, RCC_CR_HSEON | RCC_CR_HSEBYP | RCC_CR_CSSON);
 
-	/* Wait till HSE is disabled */
-	while (READ_BIT(RCC->CR, RCC_CR_HSERDY) != RESET) {
-		if ((HAL_GetTick() - tickstart) > HSE_TIMEOUT_VALUE) {
-			return HAL_TIMEOUT;
-		}
-	}
+  /* Wait till HSE is disabled */
+  while (READ_BIT(RCC->CR, RCC_CR_HSERDY) != RESET)
+  {
+    if ((HAL_GetTick() - tickstart) > HSE_TIMEOUT_VALUE)
+    {
+      return HAL_TIMEOUT;
+    }
+  }
 
-	/* Get Start Tick */
-	tickstart = HAL_GetTick();
+  /* Get Start Tick */
+  tickstart = HAL_GetTick();
 
-	/* Clear PLLON bit */
-	CLEAR_BIT(RCC->CR, RCC_CR_PLLON);
+  /* Clear PLLON bit */
+  CLEAR_BIT(RCC->CR, RCC_CR_PLLON);
 
-	/* Wait till PLL is disabled */
-	while (READ_BIT(RCC->CR, RCC_CR_PLLRDY) != RESET) {
-		if ((HAL_GetTick() - tickstart) > PLL_TIMEOUT_VALUE) {
-			return HAL_TIMEOUT;
-		}
-	}
+  /* Wait till PLL is disabled */
+  while (READ_BIT(RCC->CR, RCC_CR_PLLRDY) != RESET)
+  {
+    if ((HAL_GetTick() - tickstart) > PLL_TIMEOUT_VALUE)
+    {
+      return HAL_TIMEOUT;
+    }
+  }
 
 #if defined(RCC_PLLI2S_SUPPORT)
-	/* Get Start Tick */
-	tickstart = HAL_GetTick();
+  /* Get Start Tick */
+  tickstart = HAL_GetTick();
 
-	/* Reset PLLI2SON bit */
-	CLEAR_BIT(RCC->CR, RCC_CR_PLLI2SON);
+  /* Reset PLLI2SON bit */
+  CLEAR_BIT(RCC->CR, RCC_CR_PLLI2SON);
 
-	/* Wait till PLLI2S is disabled */
-	while (READ_BIT(RCC->CR, RCC_CR_PLLI2SRDY) != RESET) {
-		if ((HAL_GetTick() - tickstart) > PLLI2S_TIMEOUT_VALUE) {
-			return HAL_TIMEOUT;
-		}
-	}
+  /* Wait till PLLI2S is disabled */
+  while (READ_BIT(RCC->CR, RCC_CR_PLLI2SRDY) != RESET)
+  {
+    if ((HAL_GetTick() - tickstart) > PLLI2S_TIMEOUT_VALUE)
+    {
+      return HAL_TIMEOUT;
+    }
+  }
 #endif /* RCC_PLLI2S_SUPPORT */
 
 #if defined(RCC_PLLSAI_SUPPORT)
-	/* Get Start Tick */
-	tickstart = HAL_GetTick();
+  /* Get Start Tick */
+  tickstart = HAL_GetTick();
 
-	/* Reset PLLSAI bit */
-	CLEAR_BIT(RCC->CR, RCC_CR_PLLSAION);
+  /* Reset PLLSAI bit */
+  CLEAR_BIT(RCC->CR, RCC_CR_PLLSAION);
 
-	/* Wait till PLLSAI is disabled */
-	while (READ_BIT(RCC->CR, RCC_CR_PLLSAIRDY) != RESET) {
-		if ((HAL_GetTick() - tickstart) > PLLSAI_TIMEOUT_VALUE) {
-			return HAL_TIMEOUT;
-		}
-	}
+  /* Wait till PLLSAI is disabled */
+  while (READ_BIT(RCC->CR, RCC_CR_PLLSAIRDY) != RESET)
+  {
+    if ((HAL_GetTick() - tickstart) > PLLSAI_TIMEOUT_VALUE)
+    {
+      return HAL_TIMEOUT;
+    }
+  }
 #endif /* RCC_PLLSAI_SUPPORT */
 
-	/* Once PLL, PLLI2S and PLLSAI are OFF, reset PLLCFGR register to default value */
+  /* Once PLL, PLLI2S and PLLSAI are OFF, reset PLLCFGR register to default value */
 #if defined(STM32F412Cx) || defined(STM32F412Rx) || defined(STM32F412Vx) || defined(STM32F412Zx) || defined(STM32F413xx) || \
     defined(STM32F423xx) || defined(STM32F446xx) || defined(STM32F469xx) || defined(STM32F479xx)
-	RCC->PLLCFGR = RCC_PLLCFGR_PLLM_4 | RCC_PLLCFGR_PLLN_6 | RCC_PLLCFGR_PLLN_7 | RCC_PLLCFGR_PLLQ_2 | RCC_PLLCFGR_PLLR_1;
+  RCC->PLLCFGR = RCC_PLLCFGR_PLLM_4 | RCC_PLLCFGR_PLLN_6 | RCC_PLLCFGR_PLLN_7 | RCC_PLLCFGR_PLLQ_2 | RCC_PLLCFGR_PLLR_1;
 #elif defined(STM32F410Tx) || defined(STM32F410Cx) || defined(STM32F410Rx)
-	RCC->PLLCFGR = RCC_PLLCFGR_PLLR_0 | RCC_PLLCFGR_PLLR_1 | RCC_PLLCFGR_PLLR_2 | RCC_PLLCFGR_PLLM_4 | RCC_PLLCFGR_PLLN_6 | RCC_PLLCFGR_PLLN_7 | RCC_PLLCFGR_PLLQ_0 | RCC_PLLCFGR_PLLQ_1 | RCC_PLLCFGR_PLLQ_2 | RCC_PLLCFGR_PLLQ_3;
+  RCC->PLLCFGR = RCC_PLLCFGR_PLLR_0 | RCC_PLLCFGR_PLLR_1 | RCC_PLLCFGR_PLLR_2 | RCC_PLLCFGR_PLLM_4 | RCC_PLLCFGR_PLLN_6 | RCC_PLLCFGR_PLLN_7 | RCC_PLLCFGR_PLLQ_0 | RCC_PLLCFGR_PLLQ_1 | RCC_PLLCFGR_PLLQ_2 | RCC_PLLCFGR_PLLQ_3;
 #else
-	RCC->PLLCFGR = RCC_PLLCFGR_PLLM_4 | RCC_PLLCFGR_PLLN_6 | RCC_PLLCFGR_PLLN_7
-			| RCC_PLLCFGR_PLLQ_2;
+  RCC->PLLCFGR = RCC_PLLCFGR_PLLM_4 | RCC_PLLCFGR_PLLN_6 | RCC_PLLCFGR_PLLN_7 | RCC_PLLCFGR_PLLQ_2;
 #endif /* STM32F412Cx || STM32F412Rx || STM32F412Vx || STM32F412Zx || STM32F413xx || STM32F423xx || STM32F446xx || STM32F469xx || STM32F479xx */
 
-	/* Reset PLLI2SCFGR register to default value */
+  /* Reset PLLI2SCFGR register to default value */
 #if defined(STM32F412Cx) || defined(STM32F412Rx) || defined(STM32F412Vx) || defined(STM32F412Zx) || defined(STM32F413xx) || \
     defined(STM32F423xx) || defined(STM32F446xx)
-	RCC->PLLI2SCFGR = RCC_PLLI2SCFGR_PLLI2SM_4 | RCC_PLLI2SCFGR_PLLI2SN_6 | RCC_PLLI2SCFGR_PLLI2SN_7 | RCC_PLLI2SCFGR_PLLI2SQ_2 | RCC_PLLI2SCFGR_PLLI2SR_1;
+  RCC->PLLI2SCFGR = RCC_PLLI2SCFGR_PLLI2SM_4 | RCC_PLLI2SCFGR_PLLI2SN_6 | RCC_PLLI2SCFGR_PLLI2SN_7 | RCC_PLLI2SCFGR_PLLI2SQ_2 | RCC_PLLI2SCFGR_PLLI2SR_1;
 #elif defined(STM32F401xC) || defined(STM32F401xE) || defined(STM32F405xx) || defined(STM32F415xx) || defined(STM32F407xx) || defined(STM32F417xx)
-	RCC->PLLI2SCFGR = RCC_PLLI2SCFGR_PLLI2SN_6 | RCC_PLLI2SCFGR_PLLI2SN_7 | RCC_PLLI2SCFGR_PLLI2SR_1;
+  RCC->PLLI2SCFGR = RCC_PLLI2SCFGR_PLLI2SN_6 | RCC_PLLI2SCFGR_PLLI2SN_7 | RCC_PLLI2SCFGR_PLLI2SR_1;
 #elif defined(STM32F427xx) || defined(STM32F437xx) || defined(STM32F429xx) || defined(STM32F439xx) || defined(STM32F469xx) || defined(STM32F479xx)
-	RCC->PLLI2SCFGR = RCC_PLLI2SCFGR_PLLI2SN_6 | RCC_PLLI2SCFGR_PLLI2SN_7
-			| RCC_PLLI2SCFGR_PLLI2SQ_2 | RCC_PLLI2SCFGR_PLLI2SR_1;
+  RCC->PLLI2SCFGR = RCC_PLLI2SCFGR_PLLI2SN_6 | RCC_PLLI2SCFGR_PLLI2SN_7 | RCC_PLLI2SCFGR_PLLI2SQ_2 | RCC_PLLI2SCFGR_PLLI2SR_1;
 #elif defined(STM32F411xE)
-	RCC->PLLI2SCFGR = RCC_PLLI2SCFGR_PLLI2SM_4 | RCC_PLLI2SCFGR_PLLI2SN_6 | RCC_PLLI2SCFGR_PLLI2SN_7 | RCC_PLLI2SCFGR_PLLI2SR_1;
+  RCC->PLLI2SCFGR = RCC_PLLI2SCFGR_PLLI2SM_4 | RCC_PLLI2SCFGR_PLLI2SN_6 | RCC_PLLI2SCFGR_PLLI2SN_7 | RCC_PLLI2SCFGR_PLLI2SR_1;
 #endif /* STM32F412Cx || STM32F412Rx || STM32F412Vx || STM32F412Zx || STM32F413xx || STM32F423xx || STM32F446xx */
 
-	/* Reset PLLSAICFGR register */
+  /* Reset PLLSAICFGR register */
 #if defined(STM32F427xx) || defined(STM32F429xx) || defined(STM32F437xx) || defined(STM32F439xx) || defined(STM32F469xx) || defined(STM32F479xx)
-	RCC->PLLSAICFGR = RCC_PLLSAICFGR_PLLSAIN_6 | RCC_PLLSAICFGR_PLLSAIN_7
-			| RCC_PLLSAICFGR_PLLSAIQ_2 | RCC_PLLSAICFGR_PLLSAIR_1;
+  RCC->PLLSAICFGR = RCC_PLLSAICFGR_PLLSAIN_6 | RCC_PLLSAICFGR_PLLSAIN_7 | RCC_PLLSAICFGR_PLLSAIQ_2 | RCC_PLLSAICFGR_PLLSAIR_1;
 #elif defined(STM32F446xx)
   RCC->PLLSAICFGR = RCC_PLLSAICFGR_PLLSAIM_4 | RCC_PLLSAICFGR_PLLSAIN_6 | RCC_PLLSAICFGR_PLLSAIN_7 | RCC_PLLSAICFGR_PLLSAIQ_2;
 #endif /* STM32F427xx || STM32F429xx || STM32F437xx || STM32F439xx || STM32F469xx || STM32F479xx */
 
-	/* Disable all interrupts */
-	CLEAR_BIT(RCC->CIR,
-			RCC_CIR_LSIRDYIE | RCC_CIR_LSERDYIE | RCC_CIR_HSIRDYIE | RCC_CIR_HSERDYIE | RCC_CIR_PLLRDYIE);
+  /* Disable all interrupts */
+  CLEAR_BIT(RCC->CIR, RCC_CIR_LSIRDYIE | RCC_CIR_LSERDYIE | RCC_CIR_HSIRDYIE | RCC_CIR_HSERDYIE | RCC_CIR_PLLRDYIE);
 
 #if defined(RCC_CIR_PLLI2SRDYIE)
-	CLEAR_BIT(RCC->CIR, RCC_CIR_PLLI2SRDYIE);
+  CLEAR_BIT(RCC->CIR, RCC_CIR_PLLI2SRDYIE);
 #endif /* RCC_CIR_PLLI2SRDYIE */
 
 #if defined(RCC_CIR_PLLSAIRDYIE)
-	CLEAR_BIT(RCC->CIR, RCC_CIR_PLLSAIRDYIE);
+  CLEAR_BIT(RCC->CIR, RCC_CIR_PLLSAIRDYIE);
 #endif /* RCC_CIR_PLLSAIRDYIE */
 
-	/* Clear all interrupt flags */
-	SET_BIT(RCC->CIR,
-			RCC_CIR_LSIRDYC | RCC_CIR_LSERDYC | RCC_CIR_HSIRDYC | RCC_CIR_HSERDYC | RCC_CIR_PLLRDYC | RCC_CIR_CSSC);
+  /* Clear all interrupt flags */
+  SET_BIT(RCC->CIR, RCC_CIR_LSIRDYC | RCC_CIR_LSERDYC | RCC_CIR_HSIRDYC | RCC_CIR_HSERDYC | RCC_CIR_PLLRDYC | RCC_CIR_CSSC);
 
 #if defined(RCC_CIR_PLLI2SRDYC)
-	SET_BIT(RCC->CIR, RCC_CIR_PLLI2SRDYC);
+  SET_BIT(RCC->CIR, RCC_CIR_PLLI2SRDYC);
 #endif /* RCC_CIR_PLLI2SRDYC */
 
 #if defined(RCC_CIR_PLLSAIRDYC)
-	SET_BIT(RCC->CIR, RCC_CIR_PLLSAIRDYC);
+  SET_BIT(RCC->CIR, RCC_CIR_PLLSAIRDYC);
 #endif /* RCC_CIR_PLLSAIRDYC */
 
-	/* Clear LSION bit */
-	CLEAR_BIT(RCC->CSR, RCC_CSR_LSION);
+  /* Clear LSION bit */
+  CLEAR_BIT(RCC->CSR, RCC_CSR_LSION);
 
-	/* Reset all CSR flags */
-	SET_BIT(RCC->CSR, RCC_CSR_RMVF);
+  /* Reset all CSR flags */
+  SET_BIT(RCC->CSR, RCC_CSR_RMVF);
 
-	/* Update the SystemCoreClock global variable */
-	SystemCoreClock = HSI_VALUE;
+  /* Update the SystemCoreClock global variable */
+  SystemCoreClock = HSI_VALUE;
 
-	/* Adapt Systick interrupt period */
-	if (HAL_InitTick(uwTickPrio) != HAL_OK) {
-		return HAL_ERROR;
-	} else {
-		return HAL_OK;
-	}
+  /* Adapt Systick interrupt period */
+  if(HAL_InitTick(uwTickPrio) != HAL_OK)
+  {
+    return HAL_ERROR;
+  }
+  else
+  {
+    return HAL_OK;
+  }
 }
 
 #if defined(STM32F410Tx) || defined(STM32F410Cx) || defined(STM32F410Rx) || defined(STM32F446xx) || defined(STM32F469xx) || defined(STM32F479xx) || defined(STM32F412Zx) ||\
@@ -3754,10 +3775,10 @@ void HAL_RCC_GetOscConfig(RCC_OscInitTypeDef  *RCC_OscInitStruct)
 
 #endif /* HAL_RCC_MODULE_ENABLED */
 /**
- * @}
- */
+  * @}
+  */
 
 /**
- * @}
- */
+  * @}
+  */
 

@@ -29,8 +29,8 @@
 #include <stdlib.h>
 
 /* Defining MPU_WRAPPERS_INCLUDED_FROM_API_FILE prevents task.h from redefining
- all the API functions to use the MPU wrappers.  That should only be done when
- task.h is included from an application file. */
+all the API functions to use the MPU wrappers.  That should only be done when
+task.h is included from an application file. */
 #define MPU_WRAPPERS_INCLUDED_FROM_API_FILE
 
 #include "FreeRTOS.h"
@@ -43,15 +43,16 @@
 #endif
 
 /* Lint e9021, e961 and e750 are suppressed as a MISRA exception justified
- because the MPU ports require MPU_WRAPPERS_INCLUDED_FROM_API_FILE to be defined
- for the header files above, but not in this file, in order to generate the
- correct privileged Vs unprivileged linkage and placement. */
+because the MPU ports require MPU_WRAPPERS_INCLUDED_FROM_API_FILE to be defined
+for the header files above, but not in this file, in order to generate the
+correct privileged Vs unprivileged linkage and placement. */
 #undef MPU_WRAPPERS_INCLUDED_FROM_API_FILE /*lint !e9021 !e961 !e750. */
 
+
 /* This entire source file will be skipped if the application is not configured
- to include software timer functionality.  This #if is closed at the very bottom
- of this file.  If you want to include software timer functionality then ensure
- configUSE_TIMERS is set to 1 in FreeRTOSConfig.h. */
+to include software timer functionality.  This #if is closed at the very bottom
+of this file.  If you want to include software timer functionality then ensure
+configUSE_TIMERS is set to 1 in FreeRTOSConfig.h. */
 #if ( configUSE_TIMERS == 1 )
 
 /* Misc definitions. */
@@ -1121,4 +1122,6 @@ Timer_t * const pxTimer = xTimer;
 to include software timer functionality.  If you want to include software timer
 functionality then ensure configUSE_TIMERS is set to 1 in FreeRTOSConfig.h. */
 #endif /* configUSE_TIMERS == 1 */
+
+
 

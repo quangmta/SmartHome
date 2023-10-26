@@ -1,59 +1,59 @@
 /**
- ******************************************************************************
- * @file    stm32f4xx_hal_flash_ramfunc.c
- * @author  MCD Application Team
- * @brief   FLASH RAMFUNC module driver.
- *          This file provides a FLASH firmware functions which should be 
- *          executed from internal SRAM
- *            + Stop/Start the flash interface while System Run
- *            + Enable/Disable the flash sleep while System Run
- @verbatim
- ==============================================================================
- ##### APIs executed from Internal RAM #####
- ==============================================================================
- [..]
- *** ARM Compiler ***
- --------------------
- [..] RAM functions are defined using the toolchain options. 
- Functions that are be executed in RAM should reside in a separate
- source module. Using the 'Options for File' dialog you can simply change
- the 'Code / Const' area of a module to a memory space in physical RAM.
- Available memory areas are declared in the 'Target' tab of the 
- Options for Target' dialog.
+  ******************************************************************************
+  * @file    stm32f4xx_hal_flash_ramfunc.c
+  * @author  MCD Application Team
+  * @brief   FLASH RAMFUNC module driver.
+  *          This file provides a FLASH firmware functions which should be 
+  *          executed from internal SRAM
+  *            + Stop/Start the flash interface while System Run
+  *            + Enable/Disable the flash sleep while System Run
+  @verbatim
+  ==============================================================================
+                    ##### APIs executed from Internal RAM #####
+  ==============================================================================
+  [..]
+    *** ARM Compiler ***
+    --------------------
+    [..] RAM functions are defined using the toolchain options. 
+         Functions that are be executed in RAM should reside in a separate
+         source module. Using the 'Options for File' dialog you can simply change
+         the 'Code / Const' area of a module to a memory space in physical RAM.
+         Available memory areas are declared in the 'Target' tab of the 
+         Options for Target' dialog.
 
- *** ICCARM Compiler ***
- -----------------------
- [..] RAM functions are defined using a specific toolchain keyword "__ramfunc".
+    *** ICCARM Compiler ***
+    -----------------------
+    [..] RAM functions are defined using a specific toolchain keyword "__ramfunc".
 
- *** GNU Compiler ***
- --------------------
- [..] RAM functions are defined using a specific toolchain attribute
- "__attribute__((section(".RamFunc")))".
- 
- @endverbatim         
- ******************************************************************************
- * @attention
- *
- * Copyright (c) 2017 STMicroelectronics.
- * All rights reserved.
- *
- * This software is licensed under terms that can be found in the LICENSE file in
- * the root directory of this software component.
- * If no LICENSE file comes with this software, it is provided AS-IS.
- ******************************************************************************
- */
+    *** GNU Compiler ***
+    --------------------
+    [..] RAM functions are defined using a specific toolchain attribute
+         "__attribute__((section(".RamFunc")))".
+  
+  @endverbatim         
+  ******************************************************************************
+  * @attention
+  *
+  * Copyright (c) 2017 STMicroelectronics.
+  * All rights reserved.
+  *
+  * This software is licensed under terms that can be found in the LICENSE file in
+  * the root directory of this software component.
+  * If no LICENSE file comes with this software, it is provided AS-IS.
+  ******************************************************************************
+  */ 
 
 /* Includes ------------------------------------------------------------------*/
 #include "stm32f4xx_hal.h"
 
 /** @addtogroup STM32F4xx_HAL_Driver
- * @{
- */
+  * @{
+  */
 
 /** @defgroup FLASH_RAMFUNC FLASH RAMFUNC
- * @brief FLASH functions executed from RAM
- * @{
- */
+  * @brief FLASH functions executed from RAM
+  * @{
+  */
 #ifdef HAL_FLASH_MODULE_ENABLED
 #if defined(STM32F410Tx) || defined(STM32F410Cx) || defined(STM32F410Rx) || defined(STM32F411xE) || defined(STM32F446xx) || defined(STM32F412Zx) || defined(STM32F412Vx) || \
     defined(STM32F412Rx) || defined(STM32F412Cx)
@@ -163,10 +163,10 @@ __RAM_FUNC HAL_StatusTypeDef HAL_FLASHEx_DisableFlashSleepMode(void)
 #endif /* STM32F410xx || STM32F411xE || STM32F446xx || STM32F412Zx || STM32F412Vx || STM32F412Rx || STM32F412Cx */
 #endif /* HAL_FLASH_MODULE_ENABLED */
 /**
- * @}
- */
+  * @}
+  */
 
 /**
- * @}
- */
+  * @}
+  */
 
