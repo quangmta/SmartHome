@@ -77,7 +77,7 @@ extern uint32_t timerPID_pres;
 //uint8_t flag_heater,flag_fan, flag_fc;
 //uint8_t heater_failure,fan_failure, fc_failure;
 
-uint8_t tx_buffer[16];
+uint8_t tx_buffer[RxBuf_SIZE];
 uint16_t txSize;
 uint8_t rx_buffer[RxBuf_SIZE];
 uint8_t receiverData[RxBuf_SIZE];
@@ -809,7 +809,6 @@ void StartTaskReceiveData(void const *argument) {
 			} else {
 				uint8_t datatx[2] = {'a',0};
 				PrepareData(datatx, 2);
-
 
 				HAL_UART_Transmit(&huart6, tx_buffer, txSize, HAL_MAX_DELAY);
 			}

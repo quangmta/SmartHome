@@ -12,8 +12,8 @@
 ../Core/Src/main.c:630:6:Parse	9
 ../Core/Src/main.c:681:6:PrepareData	5
 ../Core/Src/main.c:712:6:StartTaskReceiveData	18
-../Core/Src/main.c:831:6:StartTaskHeater	4
-../Core/Src/main.c:859:6:StartTaskFan	7
-../Core/Src/main.c:894:6:StartTaskSendData	6
-../Core/Src/main.c:954:6:StartTaskReadTemp	2
-../Core/Src/main.c:972:6:Error_Handler	1
+../Core/Src/main.c:830:6:StartTaskHeater	4
+../Core/Src/main.c:858:6:StartTaskFan	7
+../Core/Src/main.c:893:6:StartTaskSendData	6
+../Core/Src/main.c:953:6:StartTaskReadTemp	2
+../Core/Src/main.c:971:6:Error_Handler	1
