@@ -900,6 +900,8 @@ void StartTaskFan(void const *argument) {
 			HAL_GPIO_WritePin(Fan_Ctrl_GPIO_Port, Fan_Ctrl_Pin, 0);
 			HAL_GPIO_WritePin(FC_Ctrl_GPIO_Port, FC_Ctrl_Pin, 0);
 			HAL_GPIO_WritePin(Heater_Ctrl_GPIO_Port, Heater_Ctrl_Pin, 0);
+		} else if (State_Machine == BLOCK){
+			__HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_4, 0);
 		}
 
 		osDelay(5000);
