@@ -970,8 +970,8 @@ void StartTaskSendData(void const * argument)
 				datatx[i + 9] = data32.cValue[i];
 			}
 
-			datatx[13] = State_Machine << 3 | state_heater << 2
-					| state_fan << 1 | state_fc;
+			datatx[13] = (((State_Machine && 0x7 ) << 3) | ((state_heater && 1) << 2 )
+					| ((state_fan && 1) << 1) | (state_fc && 1));
 
 			PrepareData(datatx, 14);
 
