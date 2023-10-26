@@ -798,6 +798,7 @@ void StartTaskReceiveData(void const * argument)
 							State_Machine = STOP;
 						}
 					}
+					break;
 				}
 					// Manual
 				case 'h': //heater control
@@ -806,6 +807,7 @@ void StartTaskReceiveData(void const * argument)
 					HAL_GPIO_WritePin(Heater_Ctrl_GPIO_Port, Heater_Ctrl_Pin,
 							data32.iValue);
 					if (data32.iValue == 0) pwm_temp=0;
+					break;
 				}
 				case 'c': //frequency converter control
 				{
@@ -813,6 +815,7 @@ void StartTaskReceiveData(void const * argument)
 					HAL_GPIO_WritePin(FC_Ctrl_GPIO_Port, FC_Ctrl_Pin,
 							data32.iValue);
 					if (data32.iValue == 0) pwm_speed=0;
+					break;
 				}
 				case 'f': //fan control
 				{
@@ -820,6 +823,7 @@ void StartTaskReceiveData(void const * argument)
 					HAL_GPIO_WritePin(Fan_Ctrl_GPIO_Port, Fan_Ctrl_Pin,
 							data32.iValue);
 					if (data32.iValue == 0) pwm_speed=0;
+					break;
 				}
 				case 'p': {
 					PID_TEMP.Kp = data32.fValue;
@@ -837,6 +841,7 @@ void StartTaskReceiveData(void const * argument)
 				}
 				case 'r': {
 					request = 1;
+					break;
 				}
 				}
 			} else {
