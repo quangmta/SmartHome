@@ -715,7 +715,16 @@ void PrepareData(uint8_t* data, int len)
 			tx_buffer[txSize++] = data[i];
 		}
 	}
-	tx_buffer[txSize++] = calculate_crc8(data, len);
+	uint8_t crc = calculate_crc8(data, len);
+	if (crc == StartBf || crc == StopBf || crc == EscapeBf)
+	{
+		tx_buffer[txSize++] = (uint8_t)EscapeBf;
+		tx_buffer[txSize++] = (uint8_t)(crc ^ 0x20);
+	}
+	else
+	{
+		tx_buffer[txSize++] = crc;
+	}
 	tx_buffer[txSize++] = (uint8_t)StopBf;
 }
 /* USER CODE END 4 */
