@@ -924,9 +924,9 @@ void StartTaskSendData(void const *argument) {
 				datatx[i + 5] = data32.cValue[i];
 			}
 
-			data32.fValue = pwm_temp / PWM_MAX * MAX_CAP;
+			data32.fValue = (float) pwm_temp / PWM_MAX * MAX_CAP;
 			for (i = 0; i < 4; i++) {
-				datatx[i + 11] = data32.cValue[i];
+				datatx[i + 9] = data32.cValue[i];
 			}
 
 			datatx[13] = State_Machine << 3 | state_heater << 2
