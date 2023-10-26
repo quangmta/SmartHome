@@ -149,16 +149,19 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin) {
 			State_Machine = HEATER_BLOWING;
 		else if (State_Machine == FAN_IDLE || State_Machine == FAN_ON)
 			State_Machine = BLOCK;
+		pwm_temp =0;
 	}
 	if (GPIO_Pin == Relay_Pin) {
 //		HAL_GPIO_WritePin(GPIOD, GPIO_PIN_15, 0);
 //		HAL_GPIO_WritePin(Fan_Ctrl_GPIO_Port, Fan_Ctrl_Pin, 0);
 		State_Machine = BLOCK;
+		pwm_speed =0;
 	}
 	if (GPIO_Pin == FC_Failure_Pin) {
 //		HAL_GPIO_WritePin(GPIOD, GPIO_PIN_14, 0);
 //		HAL_GPIO_WritePin(FC_Ctrl_GPIO_Port, FC_Ctrl_Pin, 0);
 		State_Machine = BLOCK;
+		pwm_speed =0;
 	}
 }
 
@@ -774,6 +777,8 @@ void StartTaskReceiveData(void const * argument)
 					{
 						HAL_GPIO_WritePin(Heater_Ctrl_GPIO_Port,
 						Heater_Ctrl_Pin, 0);
+						pwm_speed = 0;
+						pwm_temp = 0;
 						if (State_Machine == WORKING)
 							State_Machine = HEATER_BLOWING;
 						else if (State_Machine == BLOCK) {
@@ -791,18 +796,21 @@ void StartTaskReceiveData(void const * argument)
 					HAL_GPIO_WritePin(GPIOD, GPIO_PIN_13, data32.iValue); //green
 					HAL_GPIO_WritePin(Heater_Ctrl_GPIO_Port, Heater_Ctrl_Pin,
 							data32.iValue);
+					if (data32.iValue == 0) pwm_temp=0;
 				}
 				case 'c': //frequency converter control
 				{
 					HAL_GPIO_WritePin(GPIOD, GPIO_PIN_14, data32.iValue); //yellow
 					HAL_GPIO_WritePin(FC_Ctrl_GPIO_Port, FC_Ctrl_Pin,
 							data32.iValue);
+					if (data32.iValue == 0) pwm_speed=0;
 				}
 				case 'f': //fan control
 				{
 					HAL_GPIO_WritePin(GPIOD, GPIO_PIN_15, data32.iValue); //red
 					HAL_GPIO_WritePin(Fan_Ctrl_GPIO_Port, Fan_Ctrl_Pin,
 							data32.iValue);
+					if (data32.iValue == 0) pwm_speed=0;
 				}
 				case 'p': {
 					PID_TEMP.Kp = data32.fValue;
