@@ -206,6 +206,7 @@ void HAL_UARTEx_RxEventCallback(UART_HandleTypeDef *huart, uint16_t Size)
 		}
 		else
 		{
+			rx_length = 0;
 			flag_receive = 0;
 		}
 
