@@ -720,10 +720,10 @@ void StartTaskReceiveData(void const *argument) {
 
 			if (flag_crc) {
 				//Send ack to server
-				uint8_t datatx[3] = {2,'a',1};
-				PrepareData(datatx, 3);
+				uint8_t datatx[2] = {'a',1};
+				PrepareData(datatx, 2);
 
-				HAL_UART_Transmit(&huart6, txSize, 4, HAL_MAX_DELAY);
+				HAL_UART_Transmit(&huart6, tx_buffer, txSize, HAL_MAX_DELAY);
 
 				// Processing data
 				for (i = 0; i < 4; i++) {
@@ -807,8 +807,8 @@ void StartTaskReceiveData(void const *argument) {
 				}
 				}
 			} else {
-				uint8_t datatx[3] = {2,'a',0};
-				PrepareData(datatx, 3);
+				uint8_t datatx[2] = {'a',0};
+				PrepareData(datatx, 2);
 
 
 				HAL_UART_Transmit(&huart6, tx_buffer, txSize, HAL_MAX_DELAY);
@@ -912,29 +912,28 @@ void StartTaskSendData(void const *argument) {
 
 //			memset(tx_buffer,0,14);
 
-			uint8_t datatx[15];
-			datatx[0] = 15;
-			datatx[1] = 'd';
+			uint8_t datatx[14];
+			datatx[0] = 'd';
 
 			data32.fValue = temp_set;
 			for (i = 0; i < 4; i++) {
-				datatx[i + 2] = data32.cValue[i];
+				datatx[i + 1] = data32.cValue[i];
 			}
 
 			data32.fValue = temp;
 			for (i = 0; i < 4; i++) {
-				datatx[i + 6] = data32.cValue[i];
+				datatx[i + 5] = data32.cValue[i];
 			}
 
 			data32.fValue = pwm_temp / PWM_MAX * MAX_CAP;
 			for (i = 0; i < 4; i++) {
-				datatx[i + 10] = data32.cValue[i];
+				datatx[i + 11] = data32.cValue[i];
 			}
 
-			datatx[14] = State_Machine << 3 | state_heater << 2
+			datatx[13] = State_Machine << 3 | state_heater << 2
 					| state_fan << 1 | state_fc;
 
-			PrepareData(datatx, 15);
+			PrepareData(datatx, 14);
 
 			HAL_UART_Transmit(&huart6, (uint8_t*) tx_buffer, txSize, HAL_MAX_DELAY);
 

@@ -15,5 +15,5 @@
 ../Core/Src/main.c:831:6:StartTaskHeater	4
 ../Core/Src/main.c:859:6:StartTaskFan	7
 ../Core/Src/main.c:894:6:StartTaskSendData	6
-../Core/Src/main.c:955:6:StartTaskReadTemp	2
-../Core/Src/main.c:973:6:Error_Handler	1
+../Core/Src/main.c:954:6:StartTaskReadTemp	2
+../Core/Src/main.c:972:6:Error_Handler	1
