@@ -67,6 +67,7 @@ osThreadId TaskReadTempHandle;
 //uint8_t flag_avg = 0, flag_adc = 0;
 uint8_t flag_receive = 0, flag_correct = 0, flag_speed = 0, request = 0, i = 0;
 uint8_t crc8;
+uint8_t flag_set_temp = 0;
 
 float temp, speed, temp_set, speed_set;
 uint16_t pwm_temp, pwm_speed;
@@ -735,6 +736,7 @@ void StartTaskReceiveData(void const *argument) {
 				// Auto
 				case 't': { //Temperature
 					temp_set = data32.fValue;
+					flag_set_temp = 1;
 					last_error_pres = 0;
 					integrated_error_pres = 0;
 					timerPID_pres = HAL_GetTick();
@@ -853,11 +855,13 @@ void StartTaskHeater(void const *argument) {
 			State_Machine = WORKING;
 			break;
 		case WORKING:
-			if (abs(temp - temp_set) > 1) {
-				pwm_temp = PID_Calc(PID_TEMP, temp, temp_set);
-				__HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_3, pwm_temp);
-			} else {
-				osDelay(30000);
+			if (flag_set_temp){
+				if (abs(temp - temp_set) > 1) {
+					pwm_temp = PID_Calc(PID_TEMP, temp, temp_set);
+					__HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_3, pwm_temp);
+				} else {
+					osDelay(30000);
+				}
 			}
 			break;
 		case HEATER_BLOWING:
