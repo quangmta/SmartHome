@@ -865,7 +865,7 @@ void StartTaskHeater(void const *argument) {
 			__HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_3, 0);
 			break;
 		}
-		osDelay(500);
+		osDelay(1000);
 	}
 	/* USER CODE END StartTaskHeater */
 }
@@ -904,7 +904,7 @@ void StartTaskFan(void const *argument) {
 			__HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_4, 0);
 		}
 
-		osDelay(5000);
+		osDelay(1000);
 	}
 	/* USER CODE END StartTaskFan */
 }

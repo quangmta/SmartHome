@@ -1,5 +1,5 @@
 # Smart Home
-Structure data Protocol (like Modbus): `Length (1 byte)`+`data (n bytes)` + `crc8 (1 byte)`
+Structure data Protocol (like Modbus): `Start (0xAA)(1 byte)` + `data (n bytes)` + `crc8 (1 byte)` + `Stop (0xFF)(1 byte)`
 
 ## Data received from server via UART
 
