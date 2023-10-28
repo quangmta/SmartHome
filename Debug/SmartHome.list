@@ -31,23 +31,23 @@ Idx Name          Size      VMA       LMA       File off  Algn
                   CONTENTS, READONLY
  13 .comment      00000043  00000000  00000000  00020214  2**0
                   CONTENTS, READONLY
- 14 .debug_info   00015f5f  00000000  00000000  00020257  2**0
+ 14 .debug_info   00015f59  00000000  00000000  00020257  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 15 .debug_abbrev 000033b0  00000000  00000000  000361b6  2**0
+ 15 .debug_abbrev 000033b0  00000000  00000000  000361b0  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 16 .debug_aranges 00001388  00000000  00000000  00039568  2**3
+ 16 .debug_aranges 00001388  00000000  00000000  00039560  2**3
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 17 .debug_rnglists 00000f47  00000000  00000000  0003a8f0  2**0
+ 17 .debug_rnglists 00000f47  00000000  00000000  0003a8e8  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 18 .debug_macro  000273df  00000000  00000000  0003b837  2**0
+ 18 .debug_macro  000273df  00000000  00000000  0003b82f  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 19 .debug_line   000171a7  00000000  00000000  00062c16  2**0
+ 19 .debug_line   000171a7  00000000  00000000  00062c0e  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 20 .debug_str    000ef01a  00000000  00000000  00079dbd  2**0
+ 20 .debug_str    000ef012  00000000  00000000  00079db5  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 21 .debug_frame  00006140  00000000  00000000  00168dd8  2**2
+ 21 .debug_frame  00006140  00000000  00000000  00168dc8  2**2
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 22 .debug_line_str 0000004b  00000000  00000000  0016ef18  2**0
+ 22 .debug_line_str 0000004b  00000000  00000000  0016ef08  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
 
 Disassembly of section .text:
@@ -1493,7 +1493,7 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin) {
  8001158:	2205      	movs	r2, #5
  800115a:	701a      	strb	r2, [r3, #0]
  800115c:	e00a      	b.n	8001174 <HAL_GPIO_EXTI_Callback+0x38>
-		else if (State_Machine == FAN_IDLE || State_Machine == FAN_ON)
+		else if (State_Machine == FAN_WAIT || State_Machine == FAN_ON)
  800115e:	4b13      	ldr	r3, [pc, #76]	; (80011ac <HAL_GPIO_EXTI_Callback+0x70>)
  8001160:	781b      	ldrb	r3, [r3, #0]
  8001162:	2b01      	cmp	r3, #1
@@ -3294,7 +3294,7 @@ void StartTaskReceiveData(void const *argument) {
  8001cf6:	4b63      	ldr	r3, [pc, #396]	; (8001e84 <StartTaskReceiveData+0x2e8>)
  8001cf8:	4a65      	ldr	r2, [pc, #404]	; (8001e90 <StartTaskReceiveData+0x2f4>)
  8001cfa:	601a      	str	r2, [r3, #0]
-							State_Machine = FAN_IDLE;
+							State_Machine = FAN_WAIT;
  8001cfc:	4b63      	ldr	r3, [pc, #396]	; (8001e8c <StartTaskReceiveData+0x2f0>)
  8001cfe:	2201      	movs	r2, #1
  8001d00:	701a      	strb	r2, [r3, #0]
@@ -3695,7 +3695,7 @@ void StartTaskFan(void const *argument) {
 	/* USER CODE BEGIN StartTaskFan */
 	/* Infinite loop */
 	for (;;) {
-		if (State_Machine == FAN_IDLE || State_Machine == WORKING) {
+		if (State_Machine == FAN_WAIT || State_Machine == WORKING) {
  8001fb8:	4b37      	ldr	r3, [pc, #220]	; (8002098 <StartTaskFan+0xe8>)
  8001fba:	781b      	ldrb	r3, [r3, #0]
  8001fbc:	2b01      	cmp	r3, #1
@@ -3733,7 +3733,7 @@ void StartTaskFan(void const *argument) {
  8001ffe:	681b      	ldr	r3, [r3, #0]
  8002000:	641a      	str	r2, [r3, #64]	; 0x40
 
-				if (State_Machine == FAN_IDLE && speed_set > 0) {
+				if (State_Machine == FAN_WAIT && speed_set > 0) {
  8002002:	4b25      	ldr	r3, [pc, #148]	; (8002098 <StartTaskFan+0xe8>)
  8002004:	781b      	ldrb	r3, [r3, #0]
  8002006:	2b01      	cmp	r3, #1
@@ -3809,7 +3809,7 @@ void StartTaskFan(void const *argument) {
 		osDelay(1000);
  8002084:	f44f 707a 	mov.w	r0, #1000	; 0x3e8
  8002088:	f004 fd75 	bl	8006b76 <osDelay>
-		if (State_Machine == FAN_IDLE || State_Machine == WORKING) {
+		if (State_Machine == FAN_WAIT || State_Machine == WORKING) {
  800208c:	e794      	b.n	8001fb8 <StartTaskFan+0x8>
  800208e:	bf00      	nop
  8002090:	9999999a 	.word	0x9999999a

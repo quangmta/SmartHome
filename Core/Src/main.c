@@ -148,7 +148,7 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin) {
 //		HAL_GPIO_WritePin(Heater_Ctrl_GPIO_Port, Heater_Ctrl_Pin, 0);
 		if (State_Machine == WORKING)
 			State_Machine = HEATER_BLOWING;
-		else if (State_Machine == FAN_IDLE || State_Machine == FAN_ON)
+		else if (State_Machine == FAN_WAIT || State_Machine == FAN_ON)
 			State_Machine = BLOCK;
 		pwm_temp = 0;
 	}
@@ -755,7 +755,7 @@ void StartTaskReceiveData(void const *argument) {
 						if (State_Machine == STOP) {
 							flag_speed = 1;
 							speed_set = 1500;
-							State_Machine = FAN_IDLE;
+							State_Machine = FAN_WAIT;
 						}
 					} else //stop
 					{
@@ -885,12 +885,12 @@ void StartTaskFan(void const *argument) {
 	/* USER CODE BEGIN StartTaskFan */
 	/* Infinite loop */
 	for (;;) {
-		if (State_Machine == FAN_IDLE || State_Machine == WORKING) {
+		if (State_Machine == FAN_WAIT || State_Machine == WORKING) {
 			if (flag_speed) {
 				pwm_speed = (uint32_t) (speed_set * coeff_speed);
 				__HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_4, pwm_speed);
 
-				if (State_Machine == FAN_IDLE && speed_set > 0) {
+				if (State_Machine == FAN_WAIT && speed_set > 0) {
 					HAL_GPIO_WritePin(Heater_Ctrl_GPIO_Port, Heater_Ctrl_Pin,
 							1);
 					State_Machine = FAN_ON;

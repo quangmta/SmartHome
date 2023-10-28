@@ -38,12 +38,11 @@ extern "C" {
 /* USER CODE BEGIN ET */
 enum State {
 	STOP,
-	FAN_IDLE,
+	FAN_WAIT,
 	FAN_ON,
 	BLOCK,
 	WORKING,
-	HEATER_BLOWING,
-	FAN_OFF
+	HEATER_BLOWING
 };
 /* USER CODE END ET */
 
