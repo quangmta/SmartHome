@@ -67,7 +67,7 @@ osThreadId TaskReadTempHandle;
 //uint8_t flag_avg = 0, flag_adc = 0;
 uint8_t flag_receive = 0, flag_correct = 0, flag_speed = 0, request = 0, i = 0;
 uint8_t crc8;
-uint8_t flag_set_temp = 0;
+uint8_t flag_set_temp = 0, flag_start = 0, flag_stop = 0;
 
 float temp, speed, temp_set, speed_set;
 uint16_t pwm_temp, pwm_speed;
@@ -148,7 +148,7 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin) {
 //		HAL_GPIO_WritePin(Heater_Ctrl_GPIO_Port, Heater_Ctrl_Pin, 0);
 		if (State_Machine == WORKING)
 			State_Machine = HEATER_BLOWING;
-		else if (State_Machine == FAN_WAIT || State_Machine == FAN_ON)
+		else if (State_Machine == HEATER_START || State_Machine == FAN_START)
 			State_Machine = BLOCK;
 		pwm_temp = 0;
 	}
@@ -156,13 +156,11 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin) {
 //		HAL_GPIO_WritePin(GPIOD, GPIO_PIN_15, 0);
 //		HAL_GPIO_WritePin(Fan_Ctrl_GPIO_Port, Fan_Ctrl_Pin, 0);
 		State_Machine = BLOCK;
-		pwm_speed = 0;
 	}
 	if (GPIO_Pin == FC_Failure_Pin) {
 //		HAL_GPIO_WritePin(GPIOD, GPIO_PIN_14, 0);
 //		HAL_GPIO_WritePin(FC_Ctrl_GPIO_Port, FC_Ctrl_Pin, 0);
 		State_Machine = BLOCK;
-		pwm_speed = 0;
 	}
 }
 
@@ -581,7 +579,7 @@ static void MX_GPIO_Init(void) {
 
 	/*Configure GPIO pin Output Level */
 	HAL_GPIO_WritePin(GPIOD,
-			GPIO_PIN_13 | GPIO_PIN_14 | GPIO_PIN_15 | FC_Ctrl_Pin | Fan_Ctrl_Pin,
+	GPIO_PIN_13 | GPIO_PIN_14 | GPIO_PIN_15 | FC_Ctrl_Pin | Fan_Ctrl_Pin,
 			GPIO_PIN_RESET);
 
 	/*Configure GPIO pins : Thermostat_Pin Relay_Pin */
@@ -750,26 +748,28 @@ void StartTaskReceiveData(void const *argument) {
 				case 's': { //start/stop system
 					if (data32.iValue) //start
 					{
-						HAL_GPIO_WritePin(FC_Ctrl_GPIO_Port, FC_Ctrl_Pin, 1);
-						HAL_GPIO_WritePin(Fan_Ctrl_GPIO_Port, Fan_Ctrl_Pin, 1);
-						if (State_Machine == STOP) {
-							flag_speed = 1;
-							speed_set = 1500;
-							State_Machine = FAN_WAIT;
-						}
+						flag_start = 1;
+//						HAL_GPIO_WritePin(FC_Ctrl_GPIO_Port, FC_Ctrl_Pin, 1);
+//						HAL_GPIO_WritePin(Fan_Ctrl_GPIO_Port, Fan_Ctrl_Pin, 1);
+//						if (State_Machine == STOP) {
+//							flag_speed = 1;
+//							speed_set = 1500;
+//							State_Machine = HEATER_START;
+//						}
 					} else //stop
 					{
-						if (State_Machine == WORKING)
-							State_Machine = HEATER_BLOWING;
-						else if (State_Machine == BLOCK) {
-							HAL_GPIO_WritePin(FC_Ctrl_GPIO_Port, FC_Ctrl_Pin,
-									0);
-							HAL_GPIO_WritePin(Fan_Ctrl_GPIO_Port, Fan_Ctrl_Pin,
-									0);
-							HAL_GPIO_WritePin(Heater_Ctrl_GPIO_Port,
-									Heater_Ctrl_Pin, 0);
-							State_Machine = STOP;
-						}
+						flag_stop = 1;
+//						if (State_Machine == WORKING)
+//							State_Machine = HEATER_BLOWING;
+//						else if (State_Machine == BLOCK) {
+//							HAL_GPIO_WritePin(FC_Ctrl_GPIO_Port, FC_Ctrl_Pin,
+//									0);
+//							HAL_GPIO_WritePin(Fan_Ctrl_GPIO_Port, Fan_Ctrl_Pin,
+//									0);
+//							HAL_GPIO_WritePin(Heater_Ctrl_GPIO_Port,
+//									Heater_Ctrl_Pin, 0);
+//							State_Machine = STOP;
+//						}
 					}
 					break;
 				}
@@ -846,16 +846,24 @@ void StartTaskHeater(void const *argument) {
 	/* Infinite loop */
 	for (;;) {
 		switch (State_Machine) {
+		case HEATER_START:
+			HAL_GPIO_WritePin(Heater_Ctrl_GPIO_Port, Heater_Ctrl_Pin, 1);
+			flag_start = 0;
+			State_Machine = FAN_START;
+			break;
 		case BLOCK:
 			pwm_temp = 0;
 			__HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_3, 0);
-			break;
-		case FAN_ON:
-			HAL_GPIO_WritePin(Heater_Ctrl_GPIO_Port, Heater_Ctrl_Pin, 1);
-			State_Machine = WORKING;
+			if (flag_stop) {
+				HAL_GPIO_WritePin(Heater_Ctrl_GPIO_Port, Heater_Ctrl_Pin, 0);
+				HAL_GPIO_WritePin(Fan_Ctrl_GPIO_Port, Fan_Ctrl_Pin, 0);
+				HAL_GPIO_WritePin(FC_Ctrl_GPIO_Port, FC_Ctrl_Pin, 0);
+				State_Machine = STOP;
+				flag_stop = 0;
+			}
 			break;
 		case WORKING:
-			if (flag_set_temp){
+			if (flag_set_temp) {
 				if (abs(temp - temp_set) > 1) {
 					pwm_temp = PID_Calc(PID_TEMP, temp, temp_set);
 					__HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_3, pwm_temp);
@@ -863,10 +871,15 @@ void StartTaskHeater(void const *argument) {
 					osDelay(30000);
 				}
 			}
+			if (flag_stop) {
+				State_Machine = HEATER_BLOWING;
+				flag_stop = 0;
+			}
 			break;
 		case HEATER_BLOWING:
 			pwm_temp = 0;
 			__HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_3, 0);
+			HAL_GPIO_WritePin(Heater_Ctrl_GPIO_Port, Heater_Ctrl_Pin, 0);
 			break;
 		}
 		osDelay(1000);
@@ -885,29 +898,39 @@ void StartTaskFan(void const *argument) {
 	/* USER CODE BEGIN StartTaskFan */
 	/* Infinite loop */
 	for (;;) {
-		if (State_Machine == FAN_WAIT || State_Machine == WORKING) {
+		switch (State_Machine) {
+		case STOP:
+			if (flag_start) {
+				HAL_GPIO_WritePin(FC_Ctrl_GPIO_Port, FC_Ctrl_Pin, 1);
+				HAL_GPIO_WritePin(Fan_Ctrl_GPIO_Port, Fan_Ctrl_Pin, 1);
+				State_Machine = HEATER_START;
+				flag_start = 0;
+			}
+			break;
+		case FAN_START:
+			pwm_speed = (uint32_t) (1500 * coeff_speed);
+			__HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_4, pwm_speed);
+			State_Machine = WORKING;
+			break;
+		case WORKING:
 			if (flag_speed) {
 				pwm_speed = (uint32_t) (speed_set * coeff_speed);
 				__HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_4, pwm_speed);
-
-				if (State_Machine == FAN_WAIT && speed_set > 0) {
-					HAL_GPIO_WritePin(Heater_Ctrl_GPIO_Port, Heater_Ctrl_Pin,
-							1);
-					State_Machine = FAN_ON;
-				}
 				flag_speed = 0;
 			}
-		} else if (State_Machine == HEATER_BLOWING) {
+			break;
+		case HEATER_BLOWING:
 			osDelay(30000);
 			__HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_4, 0);
-			State_Machine = STOP;
 			HAL_GPIO_WritePin(Fan_Ctrl_GPIO_Port, Fan_Ctrl_Pin, 0);
 			HAL_GPIO_WritePin(FC_Ctrl_GPIO_Port, FC_Ctrl_Pin, 0);
-			HAL_GPIO_WritePin(Heater_Ctrl_GPIO_Port, Heater_Ctrl_Pin, 0);
-		} else if (State_Machine == BLOCK){
+			State_Machine = STOP;
+			break;
+		case BLOCK:
+			pwm_speed = 0;
 			__HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_4, 0);
+			break;
 		}
-
 		osDelay(1000);
 	}
 	/* USER CODE END StartTaskFan */
@@ -965,7 +988,7 @@ void StartTaskSendData(void const *argument) {
 			PrepareData(datatx, 14);
 
 			HAL_UART_Transmit(&huart6, (uint8_t*) tx_buffer, txSize,
-					HAL_MAX_DELAY);
+			HAL_MAX_DELAY);
 
 			request = 0;
 		}
