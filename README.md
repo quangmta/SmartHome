@@ -9,7 +9,6 @@ Data Structure (5 bytes): `prefix (1 byte)`+`value (4 bytes)`
 + _"t"_: Temperature
 + _"v"_: Speed of fan
 + _"s"_: Start/Stop system
-+ _"f"_: fan control
 + _"h"_: heater control
 + _"c"_: frequency converter control 
 + _"p"_: Kp
